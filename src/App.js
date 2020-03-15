@@ -20,12 +20,48 @@ export default class App extends React.Component {
       ],
       todoList: {
         "main": [
-          { label: "Todo1", id: "item-1", complete: false },
-          { label: "Todo2", id: "item-2", complete: false },
+          {
+            label: "title1",
+            id: "item-1",
+            name: "匿名",
+            email: "test@test.com",
+            content: "テスト入力",
+            complete: false
+          },
+          {
+            label: "title2",
+            id: "item-2",
+            name: "匿名",
+            email: "test@test.com",
+            content: "テスト入力2",
+            complete: false
+          },
+          {
+            label: "title5",
+            id: "item-5",
+            name: "匿名",
+            email: "test@test.com",
+            content: "テスト入力2",
+            complete: false
+          },
         ],
         "group-1": [
-          { label: "Todo3", id: "item-4", complete: false },
-          { label: "Todo4", id: "item-3", complete: false },
+          {
+            label: "title3",
+            id: "item-3",
+            name: "匿名",
+            email: "test@test.com",
+            content: "テスト入力",
+            complete: false
+          },
+          {
+            label: "title4",
+            id: "item-4",
+            name: "匿名",
+            email: "test@test.com",
+            content: "テスト入力2",
+            complete: false
+          },
         ]
       },
       selectedGroup: "main",
