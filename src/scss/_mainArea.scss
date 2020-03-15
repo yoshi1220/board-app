@@ -38,13 +38,25 @@
       margin-bottom: 20px;
       overflow: hidden;
 
-      .todo-input {
+      .board-input {
         border: 1px solid #666666;
         /* border-bottom: px; */
         padding: 10px 20px;
         font-size: 18px;
         float: left;
-        width: calc(100% - 120px);
+        width: calc(100% - 50px);
+        margin-bottom: 3px;
+      }
+
+      .board-content {
+        border: 1px solid #666666;
+        /* border-bottom: px; */
+        padding: 10px 20px;
+        font-size: 18px;
+        height: 100px;
+        float: left;
+        width: calc(100% - 50px);
+        margin-bottom: 3px;
       }
 
       .add-button {
@@ -53,9 +65,9 @@
         background: #3366FF;
         color: #FFFFFF;
         width: 60px;
-        height: 43px;
+        height: 35px;
         font-size: 15px;
-        float: right;
+        float: left;
       }
     }
   }
