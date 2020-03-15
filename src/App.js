@@ -65,21 +65,28 @@ export default class App extends React.Component {
         ]
       },
       selectedGroup: "main",
-      todoCount: 4,
+      postCount: 5,
       groupCount: 1,
     }
   }
 
-  onAddTodo(label) {
+  /**
+   * 投稿の新規追加
+   */
+  onAddPost(name, email, title, content) {
     let _state = Object.assign({}, this.state);
-    _state.todoCount++;
-    let todoList = _state.todoList[_state.selectedGroup];
-    let todoItem = {
-      label: label,
-      id: "item-" + _state.todoCount,
-      complete: false
+    _state.postCount++;
+    console.log(name, email, title, content);
+    let postList = _state.todoList[_state.selectedGroup];
+    let postItem = {
+      label: title,
+      id: "item-" + _state.postCount,
+      complete: false,
+      email: email,
+      name: name,
+      content: content
     }
-    todoList.push(todoItem);
+    postList.push(postItem);
     this.setState(_state);
   }
 
@@ -128,7 +135,7 @@ export default class App extends React.Component {
 
   onEditGroup(id, groupName) {
     let _state = Object.assign({}, this.state);
-    
+
     for (let i = 0; i < this.state.groupList.length; i++) {
       if (this.state.groupList[i].id == id) {
         this.state.groupList[i].label = groupName;
@@ -171,7 +178,7 @@ export default class App extends React.Component {
           onDeleteGroup={this.onDeleteGroup.bind(this)}/>
         <MainArea
           todoList={this.state.todoList[this.state.selectedGroup]}
-          onAddTodo={this.onAddTodo.bind(this)}
+          onAddPost={this.onAddPost.bind(this)}
           onCompleteTodo={this.onCompleteTodo.bind(this)}
           onDeleteTodo={this.onDeleteTodo.bind(this)}
           groupName={groupName}
