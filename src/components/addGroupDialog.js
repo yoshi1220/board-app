@@ -8,6 +8,7 @@ export default class AddGroupDialog extends React.Component {
 
   onSave(event) {
     let groupNameInput = this.refs.groupName;
+    console.log(groupNameInput.value);
     this.props.onSave(groupNameInput.value);
   }
 

@@ -2,6 +2,7 @@ import React from 'react';
 import './board.scss';
 import MainArea from './components/mainArea';
 import SideArea from './components/sideArea';
+import axios from 'axios';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -11,15 +12,15 @@ export default class App extends React.Component {
       groupList: [
         {
           id: "main",
-          label: "メイン"
+          name: "main"
         },
         {
           id: "group-1",
-          label: "グループ1"
+          name: "group1"
         }
       ],
-      todoList: {
-        "main": [
+      boardList: {
+        "1": [
           {
             label: "title1",
             id: "item-1",
@@ -45,7 +46,7 @@ export default class App extends React.Component {
             complete: false
           },
         ],
-        "group-1": [
+        "2": [
           {
             label: "title3",
             id: "item-3",
@@ -64,10 +65,79 @@ export default class App extends React.Component {
           },
         ]
       },
-      selectedGroup: "main",
+      todoList: {
+        "1": [
+          {
+            label: "title1",
+            id: "item-1",
+            name: "匿名",
+            email: "test@test.com",
+            content: "テスト入力",
+            complete: false
+          },
+          {
+            label: "title2",
+            id: "item-2",
+            name: "匿名",
+            email: "test@test.com",
+            content: "テスト入力2",
+            complete: false
+          },
+          {
+            label: "title5",
+            id: "item-5",
+            name: "匿名",
+            email: "test@test.com",
+            content: "テスト入力2",
+            complete: false
+          },
+        ],
+        "2": [
+          {
+            label: "title3",
+            id: "item-3",
+            name: "匿名",
+            email: "test@test.com",
+            content: "テスト入力",
+            complete: false
+          },
+          {
+            label: "title4",
+            id: "item-4",
+            name: "匿名",
+            email: "test@test.com",
+            content: "テスト入力2",
+            complete: false
+          },
+        ]
+      },
+      selectedGroup: "1",
       postCount: 5,
       groupCount: 1,
     }
+
+    axios.get('http://localhost:3001/groups')
+    .then((results) => {
+      this.setState({groupList: Array.from(results.data)})
+
+      for (let i = 0; i < this.state.groupList.length; i++) {
+        const group_id = this.state.groupList[i].id;
+        axios.get(`http://localhost:3001/boards/find/${group_id}`)
+        .then((results) => {
+          let _state = Object.assign({}, this.state);
+          _state.boardList[group_id] = Array.from(results.data);
+          this.setState(_state);
+        })
+        .catch((data) =>{
+          console.log('error')
+          console.log(data)
+        })
+      }
+    })
+    .catch((data) =>{
+      console.log('error')
+      console.log(data)
+    });
   }
 
   /**
@@ -92,10 +162,10 @@ export default class App extends React.Component {
 
   onCompleteTodo(id) {
     let _state = Object.assign({}, this.state);
-    let todoList = _state.todoList[_state.selectedGroup];
-    for (let i = 0; i < todoList.length; i++) {
-      if (todoList[i].id == id) {
-        todoList[i].complete = true;
+    let boardList = _state.boardList[_state.selectedGroup];
+    for (let i = 0; i < boardList.length; i++) {
+      if (boardList[i].id == id) {
+        boardList[i].complete = true;
         break;
       }
     }
@@ -125,7 +195,7 @@ export default class App extends React.Component {
     let groupId = "group-" + _state.groupCount
     let groupItem = {
       id: groupId,
-      label: groupName
+      name: groupName
     }
     _state.groupList.push(groupItem);
     _state.todoList[groupId] = [];
@@ -160,10 +230,11 @@ export default class App extends React.Component {
   }
 
   render() {
+
     let groupName = "";
     for (let i = 0; i < this.state.groupList.length; i++) {
       if (this.state.groupList[i].id == this.state.selectedGroup) {
-        groupName = this.state.groupList[i].label;
+        groupName = this.state.groupList[i].name;
         break;
       }
     }
@@ -177,6 +248,7 @@ export default class App extends React.Component {
           onEditGroup={this.onEditGroup.bind(this)}
           onDeleteGroup={this.onDeleteGroup.bind(this)}/>
         <MainArea
+          boardList={this.state.boardList[this.state.selectedGroup]}
           todoList={this.state.todoList[this.state.selectedGroup]}
           onAddPost={this.onAddPost.bind(this)}
           onCompleteTodo={this.onCompleteTodo.bind(this)}

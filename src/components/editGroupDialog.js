@@ -11,7 +11,7 @@ export default class EditGroupDialog extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     let _state = Object.assign({}, this.state);
-    _state.groupName = nextProps.group ? nextProps.group.label : "";
+    _state.groupName = nextProps.group ? nextProps.group.name : "";
     this.setState(_state);
   }
 

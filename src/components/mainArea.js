@@ -16,19 +16,19 @@ export default class MainArea extends React.Component {
   }
 
   renderTodoItems() {
-    let todoItemDom = [];
-    for (var i = 0; i < this.props.todoList.length; i++) {
+    let boardItemDom = [];
+    for (var i = 0; i < this.props.boardList.length; i++) {
       // let todoItem = <li className="todo-list-item" key={"item-" + i}>{this.state.todos[i]["label"]}</li>;
-      if (!this.props.todoList[i]["complete"]) {
-        let todoItem = <Listitem
-          data={this.props.todoList[i]}
+      if (!this.props.boardList[i]["complete"]) {
+        let boardItem = <Listitem
+          data={this.props.boardList[i]}
           key={"item" + i}
           completeTodo={this.onCompleteTodo.bind(this)}
         />
-        todoItemDom.push(todoItem);
+        boardItemDom.push(boardItem);
       }
     }
-    return todoItemDom;
+    return boardItemDom;
   }
 
   /**

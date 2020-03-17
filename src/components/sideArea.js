@@ -24,7 +24,7 @@ export default class SideArea extends React.Component {
     for (let i = 0; i < this.props.groupList.length; i++) {
       const group = this.props.groupList[i];
       const groupItem = <li key={group.id}>
-                          <span onClick={() => {this.onClickGroup(group.id)}}>{group.label}</span>
+                          <span onClick={() => {this.onClickGroup(group.id)}}>{group.name}</span>
                           <button 
                             data-id={group.id}
                             className="group-edit-button"

@@ -21,7 +21,7 @@ export default class ListItem extends React.Component {
         <ul>
           <li className="board-list-item-inside">{this.props.data["name"]}</li>
           <li className="board-list-item-inside">{this.props.data["email"]}</li>
-          <li className="board-list-item-inside">{this.props.data["label"]}</li>
+          <li className="board-list-item-inside">{this.props.data["title"]}</li>
           <li className="board-list-item-inside">{this.props.data["content"]}</li>
         </ul>
         <button 
