@@ -13,10 +13,6 @@ export default class App extends React.Component {
         {
           id: "main",
           name: "main"
-        },
-        {
-          id: "group-1",
-          name: "group1"
         }
       ],
       boardList: {
@@ -28,87 +24,7 @@ export default class App extends React.Component {
             email: "test@test.com",
             content: "テスト入力",
             complete: false
-          },
-          {
-            label: "title2",
-            id: "item-2",
-            name: "匿名",
-            email: "test@test.com",
-            content: "テスト入力2",
-            complete: false
-          },
-          {
-            label: "title5",
-            id: "item-5",
-            name: "匿名",
-            email: "test@test.com",
-            content: "テスト入力2",
-            complete: false
-          },
-        ],
-        "2": [
-          {
-            label: "title3",
-            id: "item-3",
-            name: "匿名",
-            email: "test@test.com",
-            content: "テスト入力",
-            complete: false
-          },
-          {
-            label: "title4",
-            id: "item-4",
-            name: "匿名",
-            email: "test@test.com",
-            content: "テスト入力2",
-            complete: false
-          },
-        ]
-      },
-      todoList: {
-        "1": [
-          {
-            label: "title1",
-            id: "item-1",
-            name: "匿名",
-            email: "test@test.com",
-            content: "テスト入力",
-            complete: false
-          },
-          {
-            label: "title2",
-            id: "item-2",
-            name: "匿名",
-            email: "test@test.com",
-            content: "テスト入力2",
-            complete: false
-          },
-          {
-            label: "title5",
-            id: "item-5",
-            name: "匿名",
-            email: "test@test.com",
-            content: "テスト入力2",
-            complete: false
-          },
-        ],
-        "2": [
-          {
-            label: "title3",
-            id: "item-3",
-            name: "匿名",
-            email: "test@test.com",
-            content: "テスト入力",
-            complete: false
-          },
-          {
-            label: "title4",
-            id: "item-4",
-            name: "匿名",
-            email: "test@test.com",
-            content: "テスト入力2",
-            complete: false
-          },
+          }
         ]
       },
       selectedGroup: "1",
@@ -116,28 +32,37 @@ export default class App extends React.Component {
       groupCount: 1,
     }
 
-    axios.get('http://localhost:3001/groups')
-    .then((results) => {
-      this.setState({groupList: Array.from(results.data)})
+    // 初期データの取得処理
+    const getInitialData = async () => {
+      try {
+        // グルーリストの内容を取得
+        let res = await axios.get('http://localhost:3001/groups')
+        this.setState({groupList: Array.from(res.data)})
 
-      for (let i = 0; i < this.state.groupList.length; i++) {
-        const group_id = this.state.groupList[i].id;
-        axios.get(`http://localhost:3001/boards/find/${group_id}`)
-        .then((results) => {
+        // 各グループリストの掲示内容を取得
+        for (let i = 0; i < this.state.groupList.length; i++) {
+          const group_id = this.state.groupList[i].id;
+          if (i === 0) {
+            this.setState({selectedGroup: group_id});
+          }
+
+          res = await axios.get(`http://localhost:3001/boards/find/${group_id}`)
+
           let _state = Object.assign({}, this.state);
-          _state.boardList[group_id] = Array.from(results.data);
+          _state.boardList[group_id] = Array.from(res.data);
           this.setState(_state);
-        })
-        .catch((data) =>{
-          console.log('error')
-          console.log(data)
-        })
+        }
+      } catch (error) {
+        const {
+          status,
+          statusText
+        } = error.response;
+        console.log(`Error! HTTP Status: ${status} ${statusText}`);
       }
-    })
-    .catch((data) =>{
-      console.log('error')
-      console.log(data)
-    });
+    }
+
+    // データ初期化
+    getInitialData();
   }
 
   /**
@@ -145,21 +70,56 @@ export default class App extends React.Component {
    */
   onAddPost(name, email, title, content) {
     let _state = Object.assign({}, this.state);
-    _state.postCount++;
-    console.log(name, email, title, content);
-    let postList = _state.todoList[_state.selectedGroup];
-    let postItem = {
-      label: title,
-      id: "item-" + _state.postCount,
-      complete: false,
-      email: email,
+    // _state.postCount++;
+    // console.log('values',name, email, title, content);
+    // let postList = _state.boardList[_state.selectedGroup];
+    // let postItem = {
+    //   title: title,
+    //   id: "item-" + _state.postCount,
+    //   complete: false,
+    //   email: email,
+    //   name: name,
+    //   content: content
+    // }
+    // postList.push(postItem);
+    // this.setState(_state);
+
+    // 新しい投稿
+    let boardItem = {
+      group_id: _state.selectedGroup,
+      title: title,
       name: name,
-      content: content
+      email: email,
+      content: content,
+      complete: false
     }
-    postList.push(postItem);
-    this.setState(_state);
+
+    // 投稿の新規登録
+    const createBoardItem = async () => {
+      try {
+        let res = await axios.post('http://localhost:3001/boards', boardItem);
+        console.log('finish');
+      } catch(error) {
+        console.log(error)
+      }
+    }
+
+    createBoardItem();
+
+    // 現在の投稿を再取得
+    axios.get(`http://localhost:3001/boards/find/${_state.selectedGroup}`)
+    .then((results) => {
+      _state.boardList[_state.selectedGroup] = Array.from(results.data);
+      this.setState(_state);
+    })
+    .catch((data) =>{
+      console.log(data)
+    })
   }
 
+  /**
+   * 投稿の完了（非表示）
+   */
   onCompleteTodo(id) {
     let _state = Object.assign({}, this.state);
     let boardList = _state.boardList[_state.selectedGroup];
@@ -172,18 +132,9 @@ export default class App extends React.Component {
     this.setState(_state);
   }
 
-  onDeleteTodo(id) {
-    let _state = Object.assign({}, this.state);
-    let todoList = _state.todoList[_state.selectedGroup];
-    for (let i = 0; i < todoList.length; i++) {
-      if (todoList[i].id == id) {
-        todoList.splice(i, 1);
-        break;
-      }
-    }
-    this.setState(_state);
-  }
-
+  /**
+   * グループの選択
+   */
   onSelectGroup(id) {
     console.log("onSelectGroup", id);
     this.setState({selectedGroup: id})
@@ -249,10 +200,8 @@ export default class App extends React.Component {
           onDeleteGroup={this.onDeleteGroup.bind(this)}/>
         <MainArea
           boardList={this.state.boardList[this.state.selectedGroup]}
-          todoList={this.state.todoList[this.state.selectedGroup]}
           onAddPost={this.onAddPost.bind(this)}
           onCompleteTodo={this.onCompleteTodo.bind(this)}
-          onDeleteTodo={this.onDeleteTodo.bind(this)}
           groupName={groupName}
         />
       </div>
