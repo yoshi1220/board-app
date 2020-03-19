@@ -91,7 +91,7 @@ export default class SideArea extends React.Component {
         <div className="side-area-footer">
           <button 
             className="add-group-button"
-            onClick={this.onClickAddGroup.bind(this)}>グループ新規作成</button>
+            onClick={this.onClickAddGroup.bind(this)}>カテゴリ新規作成</button>
         </div>
         <AddGroupDialog 
           show={this.state.showAddGroupDialog}

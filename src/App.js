@@ -149,16 +149,45 @@ export default class App extends React.Component {
 
   onAddGroup(groupName) {
     let _state = Object.assign({}, this.state);
-    _state.groupCount++;
-    let groupId = "group-" + _state.groupCount
-    let groupItem = {
-      id: groupId,
+    // _state.groupCount++;
+    // let groupId = "group-" + _state.groupCount
+    // let groupItem = {
+    //   id: groupId,
+    //   name: groupName
+    // }
+    // _state.groupList.push(groupItem);
+    // _state.todoList[groupId] = [];
+
+    // this.setState(_state);
+
+     // 新しいカテゴリ
+     let groupItem = {
       name: groupName
     }
-    _state.groupList.push(groupItem);
-    _state.todoList[groupId] = [];
 
-    this.setState(_state);
+    // カテゴリの新規登録
+    const createGroupItem = async () => {
+      try {
+        let res = await axios.post('http://localhost:3001/groups', groupItem);
+        console.log('finish');
+      } catch(error) {
+        console.log(error)
+      }
+    }
+
+    createGroupItem();
+
+    // 現在のカテゴリ一覧を取得
+    axios.get('http://localhost:3001/groups')
+    .then((results) => {
+      _state.groupList = Array.from(results.data);
+      this.setState(_state);
+    })
+    .catch((data) =>{
+      console.log(data)
+    })
+
+    window.location.reload();
   }
 
   onEditGroup(id, groupName) {
