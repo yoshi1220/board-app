@@ -70,19 +70,6 @@ export default class App extends React.Component {
    */
   onAddPost(name, email, title, content) {
     let _state = Object.assign({}, this.state);
-    // _state.postCount++;
-    // console.log('values',name, email, title, content);
-    // let postList = _state.boardList[_state.selectedGroup];
-    // let postItem = {
-    //   title: title,
-    //   id: "item-" + _state.postCount,
-    //   complete: false,
-    //   email: email,
-    //   name: name,
-    //   content: content
-    // }
-    // postList.push(postItem);
-    // this.setState(_state);
 
     // 新しい投稿
     let boardItem = {
@@ -115,6 +102,8 @@ export default class App extends React.Component {
     .catch((data) =>{
       console.log(data)
     })
+
+    window.location.reload();
   }
 
   /**
@@ -122,7 +111,9 @@ export default class App extends React.Component {
    */
   onCompleteTodo(id) {
     let _state = Object.assign({}, this.state);
+
     let boardList = _state.boardList[_state.selectedGroup];
+    let board_id = 0
     for (let i = 0; i < boardList.length; i++) {
       if (boardList[i].id == id) {
         boardList[i].complete = true;
@@ -130,6 +121,22 @@ export default class App extends React.Component {
       }
     }
     this.setState(_state);
+
+    // 更新する投稿
+    let boardItem = {
+      complete: true
+    }
+
+    // 投稿の完了（非表示）
+    const completeBoardItem = async () => {
+      try {
+        let res = await axios.patch(`http://localhost:3001/boards/${id}`, boardItem);
+      } catch(error) {
+        console.log(error)
+      }
+    }
+
+    completeBoardItem();
   }
 
   /**
