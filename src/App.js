@@ -195,25 +195,50 @@ export default class App extends React.Component {
 
     for (let i = 0; i < this.state.groupList.length; i++) {
       if (this.state.groupList[i].id == id) {
-        this.state.groupList[i].label = groupName;
+        console.log('edit group name')
+        this.state.groupList[i].name = groupName;
         break;
       }
     }
-
     this.setState(_state);
+
+    let groupItem = {
+      name: groupName
+    }
+
+    const updateGroupItem = async () => {
+      try {
+        let res = await axios.patch(`http://localhost:3001/groups/${id}`, groupItem);
+      } catch(error) {
+        console.log(error)
+      }
+    }
+
+    updateGroupItem();
   }
 
   onDeleteGroup(id) {
     let _state = Object.assign({}, this.state);
-    
     for (let i = 0; i < this.state.groupList.length; i++) {
       if (this.state.groupList[i].id == id) {
         this.state.groupList.splice(i, 1)
         break;
       }
     }
-    delete this.state.todoList[id];
+    delete this.state.boardList[id];
     this.setState(_state);
+
+    // カテゴリの削除
+    const deleteGroupItem = async () => {
+      try {
+        let res = await axios.delete(`http://localhost:3001/groups/${id}`);
+        console.log('finish deleteGroupItem');
+      } catch(error) {
+        console.log(error)
+      }
+    }
+
+    deleteGroupItem();
   }
 
   render() {
