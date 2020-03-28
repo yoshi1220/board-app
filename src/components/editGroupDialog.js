@@ -36,9 +36,9 @@ export default class EditGroupDialog extends React.Component {
       return (
         <div className="modal-layer">
           <div className="dialog">
-            <div className="dialog-header">グループ編集</div>
+            <div className="dialog-header">カテゴリ編集</div>
             <div className="dialog-content">
-              グループ名:
+              カテゴリ名:
               <input 
                 type="text" 
                 name="groupName" 

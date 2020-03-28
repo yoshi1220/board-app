@@ -17,9 +17,9 @@ export default class AddGroupDialog extends React.Component {
       return (
         <div className="modal-layer">
           <div className="dialog">
-            <div className="dialog-header">グループ新規作成</div>
+            <div className="dialog-header">カテゴリ新規作成</div>
             <div className="dialog-content">
-              グループ名:
+              カテゴリ名:
               <input 
                 ref="groupName" 
                 type="text" 

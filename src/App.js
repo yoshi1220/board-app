@@ -12,6 +12,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
 
+    // ダミーデータ
     this.state = {
       groupList: [
         {
@@ -58,12 +59,6 @@ export default class App extends React.Component {
         }
       } catch (error) {
         console.log(error);
-        // const {
-        //   status,
-        //   statusText
-        // } = error.response;
-        // console.log(`Error! HTTP Status: ${status} ${statusText}`);
-
       }
     }
 
@@ -85,31 +80,32 @@ export default class App extends React.Component {
       email: email,
       content: content,
       complete: false
-    }
+    };
 
     // 投稿の新規登録
     const createBoardItem = async () => {
       try {
         let res = await axios.post(BASE_URL + '/boards', boardItem);
-        console.log('finish');
+
+        // 追加された投稿を画面に表示
+        let addedBoardItem = {
+          id: res.data.id,
+          title: res.data.title,
+          name: res.data.name,
+          email: res.data.email,
+          content: res.data.content,
+          complete: res.data.complete
+        };
+
+        _state.boardList[_state.selectedGroup].push(addedBoardItem);
+
+        this.setState(_state);
       } catch(error) {
         console.log(error)
       }
     }
 
     createBoardItem();
-
-    // 現在の投稿を再取得
-    axios.get(BASE_URL + `/boards/find/${_state.selectedGroup}`)
-    .then((results) => {
-      _state.boardList[_state.selectedGroup] = Array.from(results.data);
-      this.setState(_state);
-    })
-    .catch((data) =>{
-      console.log(data)
-    })
-
-    window.location.reload();
   }
 
   /**
@@ -117,16 +113,6 @@ export default class App extends React.Component {
    */
   onCompleteTodo(id) {
     let _state = Object.assign({}, this.state);
-
-    let boardList = _state.boardList[_state.selectedGroup];
-    let board_id = 0
-    for (let i = 0; i < boardList.length; i++) {
-      if (boardList[i].id == id) {
-        boardList[i].complete = true;
-        break;
-      }
-    }
-    this.setState(_state);
 
     // 更新する投稿
     let boardItem = {
@@ -136,7 +122,17 @@ export default class App extends React.Component {
     // 投稿の完了（非表示）
     const completeBoardItem = async () => {
       try {
-        let res = await axios.patch(BASE_URL + `/boards/${id}`, boardItem);
+        await axios.patch(BASE_URL + `/boards/${id}`, boardItem);
+
+        // 画面上の投稿を非表示にする
+        let boardList = _state.boardList[_state.selectedGroup];
+        for (let i = 0; i < boardList.length; i++) {
+          if (boardList[i].id === id) {
+            boardList[i].complete = true;
+            break;
+          }
+        }
+        this.setState(_state);
       } catch(error) {
         console.log(error)
       }
@@ -149,64 +145,48 @@ export default class App extends React.Component {
    * グループの選択
    */
   onSelectGroup(id) {
-    console.log("onSelectGroup", id);
     this.setState({selectedGroup: id})
   }
 
+  /**
+   * 新規カテゴリの追加
+   */
   onAddGroup(groupName) {
     let _state = Object.assign({}, this.state);
-    // _state.groupCount++;
-    // let groupId = "group-" + _state.groupCount
-    // let groupItem = {
-    //   id: groupId,
-    //   name: groupName
-    // }
-    // _state.groupList.push(groupItem);
-    // _state.todoList[groupId] = [];
 
-    // this.setState(_state);
-
-     // 新しいカテゴリ
-     let groupItem = {
+    // 新しいカテゴリ
+    let groupItem = {
       name: groupName
-    }
+    };
 
     // カテゴリの新規登録
     const createGroupItem = async () => {
       try {
         let res = await axios.post(BASE_URL + '/groups', groupItem);
-        console.log('finish');
+
+        // 登録されたカテゴリを一覧に表示
+        let addedGroupItem = {
+          id: res.data.id,
+          name: res.data.name
+        };
+        _state.groupList.push(addedGroupItem);
+        _state.boardList[res.data.id] = [];
+
+        this.setState(_state);
+
       } catch(error) {
         console.log(error)
       }
     }
 
     createGroupItem();
-
-    // 現在のカテゴリ一覧を取得
-    axios.get(BASE_URL + '/groups')
-    .then((results) => {
-      _state.groupList = Array.from(results.data);
-      this.setState(_state);
-    })
-    .catch((data) =>{
-      console.log(data)
-    })
-
-    window.location.reload();
   }
 
+  /**
+   * カテゴリ名の編集
+   */
   onEditGroup(id, groupName) {
     let _state = Object.assign({}, this.state);
-
-    for (let i = 0; i < this.state.groupList.length; i++) {
-      if (this.state.groupList[i].id == id) {
-        console.log('edit group name')
-        this.state.groupList[i].name = groupName;
-        break;
-      }
-    }
-    this.setState(_state);
 
     let groupItem = {
       name: groupName
@@ -214,7 +194,16 @@ export default class App extends React.Component {
 
     const updateGroupItem = async () => {
       try {
-        let res = await axios.patch(BASE_URL + `/groups/${id}`, groupItem);
+        await axios.patch(BASE_URL + `/groups/${id}`, groupItem);
+
+        // 画面上の編集されたカテゴリの名称を更新
+        for (let i = 0; i < _state.groupList.length; i++) {
+          if (_state.groupList[i].id === id) {
+            this.state.groupList[i].name = groupName;
+            break;
+          }
+        }
+        this.setState(_state);
       } catch(error) {
         console.log(error)
       }
@@ -223,29 +212,35 @@ export default class App extends React.Component {
     updateGroupItem();
   }
 
+  /**
+   * カテゴリの削除
+   */
   onDeleteGroup(id) {
     let _state = Object.assign({}, this.state);
-    for (let i = 0; i < _state.groupList.length; i++) {
-      if (_state.groupList[i].id == id) {
-        _state.groupList.splice(i, 1)
-        break;
-      }
-    }
-    delete _state.boardList[id];
-
-    // 選択中のカテゴリが削除された場合は、一番最初のカテゴリを選択し直す
-    if (_state.selectedGroup == id) {
-      _state.selectedGroup = _state.groupList[0].id;
-      console.log("change selectedGroup")
-    }
-    
-    this.setState(_state);
 
     // カテゴリの削除
     const deleteGroupItem = async () => {
       try {
-        let res = await axios.delete(BASE_URL + `/groups/${id}`);
-        console.log('finish deleteGroupItem');
+        await axios.delete(BASE_URL + `/groups/${id}`);
+
+        // 画面上のカテゴリを削除
+        for (let i = 0; i < _state.groupList.length; i++) {
+          if (_state.groupList[i].id === id) {
+            _state.groupList.splice(i, 1)
+            break;
+          }
+        }
+
+        // カテゴリ配下の投稿も削除
+        delete _state.boardList[id];
+
+        // 選択中のカテゴリが削除された場合は、一番最初のカテゴリを選択し直す
+        if (_state.selectedGroup === id) {
+          _state.selectedGroup = _state.groupList[0].id;
+        }
+
+        this.setState(_state);
+
       } catch(error) {
         console.log(error)
       }
@@ -254,11 +249,15 @@ export default class App extends React.Component {
     deleteGroupItem();
   }
 
+  /**
+   * render
+   */
   render() {
 
+    // 選択中のカテゴリ名を取得
     let groupName = "";
     for (let i = 0; i < this.state.groupList.length; i++) {
-      if (this.state.groupList[i].id == this.state.selectedGroup) {
+      if (this.state.groupList[i].id === this.state.selectedGroup) {
         groupName = this.state.groupList[i].name;
         break;
       }
