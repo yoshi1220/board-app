@@ -4,6 +4,10 @@ import MainArea from './components/mainArea';
 import SideArea from './components/sideArea';
 import axios from 'axios';
 
+// const BASE_URL = 'http://18.180.46.53'
+const BASE_URL = 'http://localhost:3001'
+
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -11,7 +15,7 @@ export default class App extends React.Component {
     this.state = {
       groupList: [
         {
-          id: "main",
+          id: "1",
           name: "main"
         }
       ],
@@ -28,15 +32,15 @@ export default class App extends React.Component {
         ]
       },
       selectedGroup: "1",
-      postCount: 5,
-      groupCount: 1,
+      // postCount: 5,
+      // groupCount: 1,
     }
 
     // 初期データの取得処理
     const getInitialData = async () => {
       try {
         // グルーリストの内容を取得
-        let res = await axios.get('http://localhost:3001/groups')
+        let res = await axios.get(BASE_URL + '/groups')
         this.setState({groupList: Array.from(res.data)})
 
         // 各グループリストの掲示内容を取得
@@ -46,18 +50,20 @@ export default class App extends React.Component {
             this.setState({selectedGroup: group_id});
           }
 
-          res = await axios.get(`http://localhost:3001/boards/find/${group_id}`)
+          res = await axios.get(BASE_URL + `/boards/find/${group_id}`)
 
           let _state = Object.assign({}, this.state);
           _state.boardList[group_id] = Array.from(res.data);
           this.setState(_state);
         }
       } catch (error) {
-        const {
-          status,
-          statusText
-        } = error.response;
-        console.log(`Error! HTTP Status: ${status} ${statusText}`);
+        console.log(error);
+        // const {
+        //   status,
+        //   statusText
+        // } = error.response;
+        // console.log(`Error! HTTP Status: ${status} ${statusText}`);
+
       }
     }
 
@@ -84,7 +90,7 @@ export default class App extends React.Component {
     // 投稿の新規登録
     const createBoardItem = async () => {
       try {
-        let res = await axios.post('http://localhost:3001/boards', boardItem);
+        let res = await axios.post(BASE_URL + '/boards', boardItem);
         console.log('finish');
       } catch(error) {
         console.log(error)
@@ -94,7 +100,7 @@ export default class App extends React.Component {
     createBoardItem();
 
     // 現在の投稿を再取得
-    axios.get(`http://localhost:3001/boards/find/${_state.selectedGroup}`)
+    axios.get(BASE_URL + `/boards/find/${_state.selectedGroup}`)
     .then((results) => {
       _state.boardList[_state.selectedGroup] = Array.from(results.data);
       this.setState(_state);
@@ -130,7 +136,7 @@ export default class App extends React.Component {
     // 投稿の完了（非表示）
     const completeBoardItem = async () => {
       try {
-        let res = await axios.patch(`http://localhost:3001/boards/${id}`, boardItem);
+        let res = await axios.patch(BASE_URL + `/boards/${id}`, boardItem);
       } catch(error) {
         console.log(error)
       }
@@ -168,7 +174,7 @@ export default class App extends React.Component {
     // カテゴリの新規登録
     const createGroupItem = async () => {
       try {
-        let res = await axios.post('http://localhost:3001/groups', groupItem);
+        let res = await axios.post(BASE_URL + '/groups', groupItem);
         console.log('finish');
       } catch(error) {
         console.log(error)
@@ -178,7 +184,7 @@ export default class App extends React.Component {
     createGroupItem();
 
     // 現在のカテゴリ一覧を取得
-    axios.get('http://localhost:3001/groups')
+    axios.get(BASE_URL + '/groups')
     .then((results) => {
       _state.groupList = Array.from(results.data);
       this.setState(_state);
@@ -208,7 +214,7 @@ export default class App extends React.Component {
 
     const updateGroupItem = async () => {
       try {
-        let res = await axios.patch(`http://localhost:3001/groups/${id}`, groupItem);
+        let res = await axios.patch(BASE_URL + `/groups/${id}`, groupItem);
       } catch(error) {
         console.log(error)
       }
@@ -219,19 +225,26 @@ export default class App extends React.Component {
 
   onDeleteGroup(id) {
     let _state = Object.assign({}, this.state);
-    for (let i = 0; i < this.state.groupList.length; i++) {
-      if (this.state.groupList[i].id == id) {
-        this.state.groupList.splice(i, 1)
+    for (let i = 0; i < _state.groupList.length; i++) {
+      if (_state.groupList[i].id == id) {
+        _state.groupList.splice(i, 1)
         break;
       }
     }
-    delete this.state.boardList[id];
+    delete _state.boardList[id];
+
+    // 選択中のカテゴリが削除された場合は、一番最初のカテゴリを選択し直す
+    if (_state.selectedGroup == id) {
+      _state.selectedGroup = _state.groupList[0].id;
+      console.log("change selectedGroup")
+    }
+    
     this.setState(_state);
 
     // カテゴリの削除
     const deleteGroupItem = async () => {
       try {
-        let res = await axios.delete(`http://localhost:3001/groups/${id}`);
+        let res = await axios.delete(BASE_URL + `/groups/${id}`);
         console.log('finish deleteGroupItem');
       } catch(error) {
         console.log(error)
