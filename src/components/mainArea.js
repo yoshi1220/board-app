@@ -15,15 +15,14 @@ export default class MainArea extends React.Component {
     }
   }
 
-  renderTodoItems() {
+  renderBoardItems() {
     let boardItemDom = [];
     for (var i = 0; i < this.props.boardList.length; i++) {
-      // let todoItem = <li className="todo-list-item" key={"item-" + i}>{this.state.todos[i]["label"]}</li>;
       if (!this.props.boardList[i]["complete"]) {
         let boardItem = <Listitem
           data={this.props.boardList[i]}
           key={"item" + i}
-          completeTodo={this.onCompleteTodo.bind(this)}
+          completePost={this.onCompletePost.bind(this)}
         />
         boardItemDom.push(boardItem);
       }
@@ -34,12 +33,12 @@ export default class MainArea extends React.Component {
   /**
    * 投稿の非表示
    */
-  onCompleteTodo(id) {
-    this.props.onCompleteTodo(id);
+  onCompletePost(id) {
+    this.props.onCompletePost(id);
   }
 
-  // onDeleteTodo(id) {
-  //   this.props.onDeleteTodo(id);
+  // onDeletePost(id) {
+  //   this.props.onDeletePost(id);
   // }
 
   /**
@@ -85,7 +84,7 @@ export default class MainArea extends React.Component {
       <div className="main-area">
         <Header groupName={this.props.groupName}/>
         <main className="list-area">
-          <div className="todo-input-area">
+          <div className="board-input-area">
             <input
               type="text"
               className="board-input"
@@ -115,8 +114,8 @@ export default class MainArea extends React.Component {
             ></textarea>
             <button className="add-button" onClick={this.onClickAddButton.bind(this)}>登録</button>
           </div>
-          <ul className="todo-list">
-            {this.renderTodoItems()}
+          <ul className="board-list">
+            {this.renderBoardItems()}
           </ul>
         </main>
         <Footer />

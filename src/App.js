@@ -111,7 +111,7 @@ export default class App extends React.Component {
   /**
    * 投稿の完了（非表示）
    */
-  onCompleteTodo(id) {
+  onCompletePost(id) {
     let _state = Object.assign({}, this.state);
 
     // 更新する投稿
@@ -274,7 +274,7 @@ export default class App extends React.Component {
         <MainArea
           boardList={this.state.boardList[this.state.selectedGroup]}
           onAddPost={this.onAddPost.bind(this)}
-          onCompleteTodo={this.onCompleteTodo.bind(this)}
+          onCompletePost={this.onCompletePost.bind(this)}
           groupName={groupName}
         />
       </div>

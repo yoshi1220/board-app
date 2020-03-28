@@ -2,12 +2,12 @@ import React from 'react';
 
 export default class ListItem extends React.Component {
   // onChangeCheckBox(event) {
-  //   this.props.completeTodo(event.target.value);
+  //   this.props.completePost(event.target.value);
   // }
 
   onClickHiddenButon(event) {
-    // this.props.deleteTodo(this.props.data.id);
-    this.props.completeTodo(this.props.data.id);
+    // this.props.deletePost(this.props.data.id);
+    this.props.completePost(this.props.data.id);
   }
 
   render() {
