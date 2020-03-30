@@ -2,6 +2,7 @@ import React from 'react';
 import './board.scss';
 import MainArea from './components/mainArea';
 import SideArea from './components/sideArea';
+import Login from './components/login';
 import axios from 'axios';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 
@@ -284,6 +285,7 @@ export default class App extends React.Component {
                 />
               </React.Fragment>
             )} />
+            <Route path="/login" component={Login} />
           </Switch>
         </div>
       </Router>

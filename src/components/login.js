@@ -1,22 +1,20 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Form, Button, Container, Row, Alert } from 'react-bootstrap';
-import { withRouter } from 'react-router-dom';
 
-class Login extends Component {
+export default class Login extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      email: '',
-      password: '',
-      errMessage: '',
+      email: "",
+      password: "",
+      errMessage: "",
     };
   }
 
   click = async () => {
     try {
-
-      this.props.history.push({ pathname: '/' });
+      this.props.history.push({ pathname: '/' }); //ひとまずルートに戻す
     } catch (e) {
       this.setState({ errMessage: 'メールアドレスかパスワードが違います' });
     }
@@ -64,5 +62,3 @@ class Login extends Component {
     );
   }
 }
-
-export default withRouter(Login);
