@@ -3,6 +3,7 @@ import './board.scss';
 import MainArea from './components/mainArea';
 import SideArea from './components/sideArea';
 import axios from 'axios';
+import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 
 // const BASE_URL = 'http://18.180.46.53'
 const BASE_URL = 'http://localhost:3001'
@@ -17,18 +18,18 @@ export default class App extends React.Component {
       groupList: [
         {
           id: "1",
-          name: "main"
+          name: " "
         }
       ],
       boardList: {
         "1": [
           {
-            label: "title1",
-            id: "item-1",
-            name: "匿名",
-            email: "test@test.com",
-            content: "テスト入力",
-            complete: false
+            label: " ",
+            id: " ",
+            name: " ",
+            email: " ",
+            content: " ",
+            complete: true
           }
         ]
       },
@@ -253,7 +254,6 @@ export default class App extends React.Component {
    * render
    */
   render() {
-
     // 選択中のカテゴリ名を取得
     let groupName = "";
     for (let i = 0; i < this.state.groupList.length; i++) {
@@ -264,20 +264,30 @@ export default class App extends React.Component {
     }
 
     return (
-      <div className = "wrap">
-        <SideArea
-          groupList={this.state.groupList}
-          onSelect={this.onSelectGroup.bind(this)}
-          onAddGroup={this.onAddGroup.bind(this)}
-          onEditGroup={this.onEditGroup.bind(this)}
-          onDeleteGroup={this.onDeleteGroup.bind(this)}/>
-        <MainArea
-          boardList={this.state.boardList[this.state.selectedGroup]}
-          onAddPost={this.onAddPost.bind(this)}
-          onCompletePost={this.onCompletePost.bind(this)}
-          groupName={groupName}
-        />
-      </div>
+      <Router>
+        <div className = "wrap">
+          <Switch>
+            <Route exact path="/" component={() => (
+              <React.Fragment>
+                <SideArea
+                  groupList={this.state.groupList}
+                  onSelect={this.onSelectGroup.bind(this)}
+                  onAddGroup={this.onAddGroup.bind(this)}
+                  onEditGroup={this.onEditGroup.bind(this)}
+                  onDeleteGroup={this.onDeleteGroup.bind(this)}
+                />
+                <MainArea
+                  boardList={this.state.boardList[this.state.selectedGroup]}
+                  onAddPost={this.onAddPost.bind(this)}
+                  onCompletePost={this.onCompletePost.bind(this)}
+                  groupName={groupName}
+                />
+              </React.Fragment>
+            )} />
+          </Switch>
+        </div>
+      </Router>
+
     );
   }
 }

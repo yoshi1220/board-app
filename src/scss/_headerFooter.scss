@@ -4,6 +4,16 @@
   height: $headerHeight;
   padding: 15px;
   background: #cccccc;
+
+  .login-link {
+    margin-left: 20px;
+    border: none;
+    float: right;
+    cursor: pointer;
+    outline: none;
+    background: #cccccc;
+    font-size: 16px;
+  }
 }
 
 .footer {

@@ -24,8 +24,8 @@ export default class ListItem extends React.Component {
           <li className="board-list-item-inside">{this.props.data["title"]}</li>
           <li className="board-list-item-inside">{this.props.data["content"]}</li>
         </ul>
-        <button 
-          className="hidden-button" 
+        <button
+          className="hidden-button"
           onClick={this.onClickHiddenButon.bind(this)}>
           非表示
         </button>
