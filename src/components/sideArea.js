@@ -19,22 +19,6 @@ export default class SideArea extends React.Component {
     this.props.onSelect(id);
   }
 
-  renderGroup() {
-    let groupListDom = [];
-    for (let i = 0; i < this.props.groupList.length; i++) {
-      const group = this.props.groupList[i];
-      const groupItem = <li key={group.id}>
-                          <span onClick={() => {this.onClickGroup(group.id)}}>{group.name}</span>
-                          <button 
-                            data-id={group.id}
-                            className="group-edit-button"
-                            onClick={this.onClickGroupEdit.bind(this)}>編集</button>
-                        </li>;
-      groupListDom.push(groupItem);
-    }
-    return groupListDom;
-  }
-
   onClickAddGroup(event) {
     this.setState({showAddGroupDialog: true})
   }
@@ -82,6 +66,52 @@ export default class SideArea extends React.Component {
     })
   }
 
+  /**
+   * カテゴリ一覧の描画
+   */
+  renderGroup() {
+    let groupListDom = [];
+    for (let i = 0; i < this.props.groupList.length; i++) {
+      const group = this.props.groupList[i];
+      let groupItem
+      if (this.props.isAdmin) {
+        // 管理者の場合は編集ボタンを追加する
+        groupItem = <li key={group.id}>
+                      <span onClick={() => {this.onClickGroup(group.id)}}>{group.name}</span>
+                      <button 
+                        data-id={group.id}
+                        className="group-edit-button"
+                        onClick={this.onClickGroupEdit.bind(this)}>編集</button>
+                    </li>;
+      } else {
+        groupItem = <li key={group.id}>
+                      <span onClick={() => {this.onClickGroup(group.id)}}>{group.name}</span>
+                    </li>;
+      }
+      groupListDom.push(groupItem);
+    }
+    return groupListDom;
+  }
+
+  /**
+   * カテゴリ追加ボタンの描画
+  */
+  renderCategoryAddButton() {
+    let renderDom = ''
+
+    if (this.props.isAdmin) {
+      renderDom = <button 
+                    className="add-group-button"
+                    onClick={this.onClickAddGroup.bind(this)}>
+                      カテゴリ新規作成
+                  </button>
+    } else {
+      renderDom = <span></span>
+    }
+
+    return renderDom
+  }
+
   render() {
     return (
       <div className="side-area">
@@ -89,9 +119,7 @@ export default class SideArea extends React.Component {
           {this.renderGroup()}
         </ul>
         <div className="side-area-footer">
-          <button 
-            className="add-group-button"
-            onClick={this.onClickAddGroup.bind(this)}>カテゴリ新規作成</button>
+          {this.renderCategoryAddButton()}
         </div>
         <AddGroupDialog 
           show={this.state.showAddGroupDialog}

@@ -293,6 +293,7 @@ export default class App extends React.Component {
                   onAddGroup={this.onAddGroup.bind(this)}
                   onEditGroup={this.onEditGroup.bind(this)}
                   onDeleteGroup={this.onDeleteGroup.bind(this)}
+                  isAdmin={this.state.isAdmin}
                 />
                 <MainArea
                   boardList={this.state.boardList[this.state.selectedGroup]}
