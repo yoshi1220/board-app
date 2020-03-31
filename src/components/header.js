@@ -7,7 +7,7 @@ export default class Header extends React.Component {
     <header className="header">
       {this.props.groupName}
       {/* <button className="login-button">ログイン</button> */}
-      <Link className="login-link" to="/login">ログイン</Link>
+      <Link className="login-link" to="/login">管理者ログイン</Link>
     </header>
     )
   }

@@ -3,11 +3,13 @@ import './board.scss';
 import MainArea from './components/mainArea';
 import SideArea from './components/sideArea';
 import Login from './components/login';
+import Logout from './components/logout';
+
 import axios from 'axios';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 
-// const BASE_URL = 'http://18.180.46.53'
-const BASE_URL = 'http://localhost:3001'
+const BASE_URL = 'http://18.180.46.53'
+// const BASE_URL = 'http://localhost:3001'
 
 
 export default class App extends React.Component {
@@ -37,6 +39,7 @@ export default class App extends React.Component {
       selectedGroup: "1",
       // postCount: 5,
       // groupCount: 1,
+      isAdmin: false,
     }
 
     // 初期データの取得処理
@@ -286,6 +289,7 @@ export default class App extends React.Component {
               </React.Fragment>
             )} />
             <Route path="/login" component={Login} />
+            <Route path="/logout" component={Logout} />
           </Switch>
         </div>
       </Router>

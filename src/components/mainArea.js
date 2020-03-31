@@ -15,20 +15,7 @@ export default class MainArea extends React.Component {
     }
   }
 
-  renderBoardItems() {
-    let boardItemDom = [];
-    for (var i = 0; i < this.props.boardList.length; i++) {
-      if (!this.props.boardList[i]["complete"]) {
-        let boardItem = <Listitem
-          data={this.props.boardList[i]}
-          key={"item" + i}
-          completePost={this.onCompletePost.bind(this)}
-        />
-        boardItemDom.push(boardItem);
-      }
-    }
-    return boardItemDom;
-  }
+  
 
   /**
    * 投稿の非表示
@@ -78,6 +65,23 @@ export default class MainArea extends React.Component {
     this.setState({inputContent: event.target.value});
   }
 
+  /**
+   * 投稿の一覧を表示
+   */
+  renderBoardItems() {
+    let boardItemDom = [];
+    for (var i = 0; i < this.props.boardList.length; i++) {
+      if (!this.props.boardList[i]["complete"]) {
+        let boardItem = <Listitem
+          data={this.props.boardList[i]}
+          key={"item" + i}
+          completePost={this.onCompletePost.bind(this)}
+        />
+        boardItemDom.push(boardItem);
+      }
+    }
+    return boardItemDom;
+  }
 
   render() {
     return (
