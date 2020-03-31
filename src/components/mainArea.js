@@ -86,7 +86,11 @@ export default class MainArea extends React.Component {
   render() {
     return (
       <div className="main-area">
-        <Header groupName={this.props.groupName}/>
+        <Header 
+          groupName={this.props.groupName}
+          isAdmin={this.props.isAdmin}
+          logoutAsAdmin={this.props.logoutAsAdmin.bind(this)}
+        />
         <main className="list-area">
           <div className="board-input-area">
             <input

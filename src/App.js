@@ -255,6 +255,20 @@ export default class App extends React.Component {
   }
 
   /**
+   * 管理者としてログイン
+   */
+  loginAsAdmin() {
+    this.setState({isAdmin: true});
+  }
+
+  /**
+   * 管理者からログアウト
+   */
+  logoutAsAdmin() {
+    this.setState({isAdmin: false});
+  }
+
+  /**
    * render
    */
   render() {
@@ -285,11 +299,21 @@ export default class App extends React.Component {
                   onAddPost={this.onAddPost.bind(this)}
                   onCompletePost={this.onCompletePost.bind(this)}
                   groupName={groupName}
+                  isAdmin={this.state.isAdmin}
+                  logoutAsAdmin={this.logoutAsAdmin.bind(this)}
                 />
               </React.Fragment>
             )} />
-            <Route path="/login" component={Login} />
-            <Route path="/logout" component={Logout} />
+            <Route path="/login" component={() => (
+              <Login
+                loginAsAdmin={this.loginAsAdmin.bind(this)}
+              />
+            )}/>
+           <Route path="/logout" component={() => (
+              <Logout
+                logoutAsAdmin={this.logoutAsAdmin.bind(this)}
+              />
+            )}/>
           </Switch>
         </div>
       </Router>

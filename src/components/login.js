@@ -1,7 +1,8 @@
 import React from 'react';
 import { Form, Button, Container, Row, Alert } from 'react-bootstrap';
+import { withRouter } from 'react-router-dom';
 
-export default class Login extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props);
 
@@ -14,7 +15,11 @@ export default class Login extends React.Component {
 
   click = async () => {
     try {
-      this.props.history.push({ pathname: '/' }); //ひとまずルートに戻す
+      // ログイン処理
+      this.props.loginAsAdmin();
+
+      // トップ画面に戻る
+      this.props.history.push('/');
     } catch (e) {
       this.setState({ errMessage: 'メールアドレスかパスワードが違います' });
     }
@@ -33,7 +38,7 @@ export default class Login extends React.Component {
               <Alert variant="danger">{this.props.message}</Alert>
             )}
             <p>
-              <b>ログイン</b>
+              <b>ログイン（作成中）</b>
             </p>
             <Form.Group controlId="email">
               <Form.Label>メールアドレス</Form.Label>
@@ -62,3 +67,5 @@ export default class Login extends React.Component {
     );
   }
 }
+
+export default withRouter(Login)

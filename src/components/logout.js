@@ -1,11 +1,9 @@
 import React from 'react';
 import { Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
-export default class Logout extends React.Component {
-  async componentDidMount() {
-    // ログアウト処理
-  }
+class Logout extends React.Component {
 
   render() {
     return (
@@ -14,7 +12,7 @@ export default class Logout extends React.Component {
           <div>
             <h2>ログアウトしました</h2>
             <div className="text-center">
-              <Link to="/">Top画面へ</Link>
+              <Link to="/">トップ画面へ</Link>
             </div>
           </div>
         </Row>
@@ -22,3 +20,5 @@ export default class Logout extends React.Component {
     );
   }
 }
+
+export default withRouter(Logout)
