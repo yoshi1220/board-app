@@ -9,8 +9,8 @@ import axios from 'axios';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 
 // const BASE_URL = 'http://18.180.46.53'
-const BASE_URL = 'http://18.178.76.89'
-// const BASE_URL = 'http://localhost:3001'
+// const BASE_URL = 'http://18.178.76.89'
+const BASE_URL = 'http://localhost:3001'
 
 
 export default class App extends React.Component {
@@ -115,6 +115,35 @@ export default class App extends React.Component {
     }
 
     createBoardItem();
+  }
+
+  /**
+   * 投稿の削除（管理者専用）
+   */
+  onDeletePost(id) {
+    let _state = Object.assign({}, this.state);
+
+    // カテゴリの削除
+    const deletePost = async () => {
+      try {
+        await axios.delete(BASE_URL + `/boards/${id}`);
+
+       // 画面上の投稿を非表示にする
+       let boardList = _state.boardList[_state.selectedGroup];
+       for (let i = 0; i < boardList.length; i++) {
+         if (boardList[i].id === id) {
+           boardList.splice(i, 1)
+           break;
+         }
+       }
+       this.setState(_state);
+
+      } catch(error) {
+        console.log(error)
+      }
+    }
+
+    deletePost();
   }
 
   /**
@@ -303,6 +332,7 @@ export default class App extends React.Component {
                   boardList={this.state.boardList[this.state.selectedGroup]}
                   onAddPost={this.onAddPost.bind(this)}
                   onCompletePost={this.onCompletePost.bind(this)}
+                  onDeletePost={this.onDeletePost.bind(this)}
                   groupName={groupName}
                   isAdmin={this.state.isAdmin}
                   logoutAsAdmin={this.logoutAsAdmin.bind(this)}
