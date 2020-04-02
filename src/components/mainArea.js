@@ -83,6 +83,21 @@ export default class MainArea extends React.Component {
     return boardItemDom;
   }
 
+  /**
+   * エラーがある場合はエラーメッセージの表示
+   */
+  renderError() {
+    let errorDom = '';
+
+    if (this.props.errorMessage != "") {
+      errorDom = <div className="error-message"><br />{this.props.errorMessage}<br /></div>
+    } else {
+      errorDom = <span></span>
+    }
+
+    return errorDom
+  }
+
   render() {
     return (
       <div className="main-area">
@@ -91,6 +106,7 @@ export default class MainArea extends React.Component {
           isAdmin={this.props.isAdmin}
           logoutAsAdmin={this.props.logoutAsAdmin.bind(this)}
         />
+        {this.renderError()}
         <main className="list-area">
           <div className="board-input-area">
             <input

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Button, Container, Row, Alert } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
+import axios from 'axios';
 
 class Login extends React.Component {
   constructor(props) {
@@ -15,11 +16,22 @@ class Login extends React.Component {
 
   click = async () => {
     try {
-      // ログイン処理
-      this.props.loginAsAdmin();
+      let data = {
+        email: this.state.email,
+        password: this.state.password
+      }
+      let res = await axios.post(this.props.baseUrl + '/auth/sign_in', data);
 
-      // トップ画面に戻る
-      this.props.history.push('/');
+      if (res.status == 200) {
+        this.setState({ errMessage: '' });
+
+        // ログイン処理
+        this.props.loginAsAdmin();
+
+        // トップ画面に戻る
+        this.props.history.push('/');
+      }
+
     } catch (e) {
       this.setState({ errMessage: 'メールアドレスかパスワードが違います' });
     }
@@ -34,11 +46,12 @@ class Login extends React.Component {
       <Container className="center">
         <Row className="justify-content-md-center">
           <Form>
-            {this.state.errMessage && (
+            {/* {this.state.errMessage && (
               <Alert variant="danger">{this.props.message}</Alert>
-            )}
+            )} */}
+            {this.state.errMessage && (<Alert variant="danger">{this.state.errMessage}</Alert>)}
             <p>
-              <b>ログイン（作成中）</b>
+              <b>ログイン</b>
             </p>
             <Form.Group controlId="email">
               <Form.Label>メールアドレス</Form.Label>

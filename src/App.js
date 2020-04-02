@@ -8,7 +8,8 @@ import Logout from './components/logout';
 import axios from 'axios';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 
-const BASE_URL = 'http://18.180.46.53'
+// const BASE_URL = 'http://18.180.46.53'
+const BASE_URL = 'http://18.178.76.89'
 // const BASE_URL = 'http://localhost:3001'
 
 
@@ -40,6 +41,7 @@ export default class App extends React.Component {
       // postCount: 5,
       // groupCount: 1,
       isAdmin: false,
+      errorMessage: "",
     }
 
     // 初期データの取得処理
@@ -105,8 +107,10 @@ export default class App extends React.Component {
         _state.boardList[_state.selectedGroup].push(addedBoardItem);
 
         this.setState(_state);
+        this.setState({errorMessage: ""})
       } catch(error) {
         console.log(error)
+        this.setState({errorMessage: error.response.data.content[0]})
       }
     }
 
@@ -302,12 +306,14 @@ export default class App extends React.Component {
                   groupName={groupName}
                   isAdmin={this.state.isAdmin}
                   logoutAsAdmin={this.logoutAsAdmin.bind(this)}
+                  errorMessage={this.state.errorMessage}
                 />
               </React.Fragment>
             )} />
             <Route path="/login" component={() => (
               <Login
                 loginAsAdmin={this.loginAsAdmin.bind(this)}
+                baseUrl={BASE_URL}
               />
             )}/>
            <Route path="/logout" component={() => (
