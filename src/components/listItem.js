@@ -30,7 +30,7 @@ export default class ListItem extends React.Component {
       renderDom = <button
                     className="hidden-button"
                     onClick={this.onClickDeleteButton.bind(this)}>
-                    削除
+                    削除（テスト用）
                   </button>;
     } else {
       renderDom = <button

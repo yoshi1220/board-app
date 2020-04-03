@@ -69,8 +69,8 @@ export default class MainArea extends React.Component {
    * 投稿の一覧を表示
    */
   renderBoardItems() {
-    console.log('renderBoardItems');
-    console.log(this.props.isAdmin);
+    // console.log('renderBoardItems');
+    // console.log(this.props.isAdmin);
     if (this.props.isAdmin) {
       return this.renderBoardItemsAdmin();
     } else {
@@ -136,6 +136,7 @@ export default class MainArea extends React.Component {
           groupName={this.props.groupName}
           isAdmin={this.props.isAdmin}
           logoutAsAdmin={this.props.logoutAsAdmin.bind(this)}
+          categoryCount={this.props.categoryCount}
         />
         {this.renderError()}
         <main className="list-area">

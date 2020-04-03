@@ -9,13 +9,18 @@ import axios from 'axios';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 
 // const BASE_URL = 'http://18.180.46.53'
-// const BASE_URL = 'http://18.178.76.89'
-const BASE_URL = 'http://localhost:3001'
-
+const BASE_URL = 'http://18.178.76.89'
+// const BASE_URL = 'http://localhost:3001'
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+
+      let isAdmin = false;
+      // ログイン済みの場合は管理者権限を与える
+      if (sessionStorage.getItem('isAdmin') == 'true') {
+        isAdmin = true;
+      }
 
     // ダミーデータ
     this.state = {
@@ -40,7 +45,8 @@ export default class App extends React.Component {
       selectedGroup: "1",
       // postCount: 5,
       // groupCount: 1,
-      isAdmin: false,
+      isAdmin: isAdmin,
+      categoryCount: 0,
       errorMessage: "",
     }
 
@@ -62,8 +68,22 @@ export default class App extends React.Component {
 
           let _state = Object.assign({}, this.state);
           _state.boardList[group_id] = Array.from(res.data);
+
+          // カテゴリの投稿件数
+          console.log('categoryCount: ' + Array.from(res.data).length);
+          
+
+          // stateの更新
           this.setState(_state);
         }
+
+        // カテゴリの投稿件数を取得
+        let _state = Object.assign({}, this.state);
+        let count = _state.boardList[_state.selectedGroup].length;
+        _state.categoryCount = count;
+         // stateの更新
+         this.setState(_state);
+
       } catch (error) {
         console.log(error);
       }
@@ -105,12 +125,14 @@ export default class App extends React.Component {
         };
 
         _state.boardList[_state.selectedGroup].push(addedBoardItem);
+        _state.categoryCount = _state.boardList[_state.selectedGroup].length;
 
         this.setState(_state);
         this.setState({errorMessage: ""})
       } catch(error) {
         console.log(error)
-        this.setState({errorMessage: error.response.data.content[0]})
+        // this.setState({errorMessage: error.response.data.content[0]})
+        this.setState({errorMessage: '本文は必須入力です。'})
       }
     }
 
@@ -136,6 +158,7 @@ export default class App extends React.Component {
            break;
          }
        }
+       _state.categoryCount = boardList.length;
        this.setState(_state);
 
       } catch(error) {
@@ -183,7 +206,11 @@ export default class App extends React.Component {
    * グループの選択
    */
   onSelectGroup(id) {
-    this.setState({selectedGroup: id})
+    this.setState({selectedGroup: id});
+
+    // カテゴリごとの投稿数
+    let count = this.state.boardList[id].length;
+    this.setState({categoryCount: count});
   }
 
   /**
@@ -211,8 +238,9 @@ export default class App extends React.Component {
         _state.boardList[res.data.id] = [];
 
         this.setState(_state);
-
+        this.setState({errorMessage: ''})
       } catch(error) {
+        this.setState({errorMessage: 'カテゴリ名を入力してください。'})
         console.log(error)
       }
     }
@@ -242,6 +270,7 @@ export default class App extends React.Component {
           }
         }
         this.setState(_state);
+        this.setState({errorMessage: ''})
       } catch(error) {
         console.log(error)
       }
@@ -275,10 +304,11 @@ export default class App extends React.Component {
         // 選択中のカテゴリが削除された場合は、一番最初のカテゴリを選択し直す
         if (_state.selectedGroup === id) {
           _state.selectedGroup = _state.groupList[0].id;
+          _state.categoryCount = _state.boardList[_state.selectedGroup].length;
         }
 
         this.setState(_state);
-
+        this.setState({errorMessage: ''})
       } catch(error) {
         console.log(error)
       }
@@ -337,6 +367,7 @@ export default class App extends React.Component {
                   isAdmin={this.state.isAdmin}
                   logoutAsAdmin={this.logoutAsAdmin.bind(this)}
                   errorMessage={this.state.errorMessage}
+                  categoryCount={this.state.categoryCount}
                 />
               </React.Fragment>
             )} />

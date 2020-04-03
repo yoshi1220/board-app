@@ -3,6 +3,14 @@
   height: 100%;
   position: relative;
 
+  .error-message {
+    padding: 10px 10px 10px 25px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    list-style: none;
+    color: #FF0000;
+  }
+
   .list-area {
     box-sizing: border-box;
     width: 100%;

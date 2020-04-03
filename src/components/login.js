@@ -28,6 +28,9 @@ class Login extends React.Component {
         // ログイン処理
         this.props.loginAsAdmin();
 
+        // ログイン情報をsessionStorageに保存
+        sessionStorage.setItem('isAdmin', 'true');
+
         // トップ画面に戻る
         this.props.history.push('/');
       }
