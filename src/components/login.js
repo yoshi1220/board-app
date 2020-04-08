@@ -28,6 +28,9 @@ class Login extends React.Component {
         // ログイン処理
         this.props.loginAsAdmin();
 
+        // 投稿一覧を再取得
+        this.props.onSelect(this.props.groupId, true);
+
         // ログイン情報をsessionStorageに保存
         sessionStorage.setItem('isAdmin', 'true');
 

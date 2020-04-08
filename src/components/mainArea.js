@@ -84,15 +84,13 @@ export default class MainArea extends React.Component {
   renderBoardItemsNormal() {
     let boardItemDom = [];
     for (var i = 0; i < this.props.boardList.length; i++) {
-      if (!this.props.boardList[i]["complete"]) {
-        let boardItem = <Listitem
-          data={this.props.boardList[i]}
-          key={this.props.boardList[i].id}
-          completePost={this.onCompletePost.bind(this)}
-          isAdmin={this.props.isAdmin}
-        />
-        boardItemDom.push(boardItem);
-      }
+      let boardItem = <Listitem
+        data={this.props.boardList[i]}
+        key={this.props.boardList[i].id}
+        completePost={this.onCompletePost.bind(this)}
+        isAdmin={this.props.isAdmin}
+      />
+      boardItemDom.push(boardItem);
     }
     return boardItemDom;
   }
@@ -103,7 +101,7 @@ export default class MainArea extends React.Component {
   renderBoardItemsAdmin() {
     let boardItemDom = [];
     for (var i = 0; i < this.props.boardList.length; i++) {
-      console.log(this.props.boardList[i].id);
+      // console.log(this.props.boardList[i].id);
       let boardItem = <Listitem
         data={this.props.boardList[i]}
         key={this.props.boardList[i].id}
@@ -133,7 +131,7 @@ export default class MainArea extends React.Component {
   render() {
     return (
       <div className="main-area">
-        <Header 
+        <Header
           groupName={this.props.groupName}
           isAdmin={this.props.isAdmin}
           logoutAsAdmin={this.props.logoutAsAdmin.bind(this)}

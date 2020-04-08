@@ -16,7 +16,7 @@ export default class SideArea extends React.Component {
   }
 
   onClickGroup(id) {
-    this.props.onSelect(id);
+    this.props.onSelect(id, this.props.isAdmin);
   }
 
   onClickAddGroup(event) {
@@ -24,7 +24,6 @@ export default class SideArea extends React.Component {
   }
 
   onSaveAddGroupDialog(groupName) {
-    console.log("onSaveAddGroupDialog", groupName)
     this.props.onAddGroup(groupName);
     this.setState({showAddGroupDialog: false})
   }
@@ -48,10 +47,9 @@ export default class SideArea extends React.Component {
   }
 
   onClickGroupEdit(event) {
-    console.log("onClickGroupEdit")
     let editButton = ReactDOM.findDOMNode(event.target);
     let id = editButton.dataset.id;
-    console.log("onClickGroupEdit", id)
+
     let selectedGroup;
     for (let i = 0; i < this.props.groupList.length; i++) {
       if (this.props.groupList[i].id == id) {
@@ -100,7 +98,7 @@ export default class SideArea extends React.Component {
     let renderDom = ''
 
     if (this.props.isAdmin) {
-      renderDom = <button 
+      renderDom = <button
                     className="add-group-button"
                     onClick={this.onClickAddGroup.bind(this)}>
                       カテゴリ新規作成
@@ -121,12 +119,12 @@ export default class SideArea extends React.Component {
         <div className="side-area-footer">
           {this.renderCategoryAddButton()}
         </div>
-        <AddGroupDialog 
+        <AddGroupDialog
           show={this.state.showAddGroupDialog}
           onSave={this.onSaveAddGroupDialog.bind(this)}
           onCancel={this.onCancelAddGroupDialog.bind(this)}
         />
-        <EditGroupDialog 
+        <EditGroupDialog
           show={this.state.showEditGroupDialog}
           group={this.state.selectedGroup}
           onSave={this.onSaveEditGroupDialog.bind(this)}

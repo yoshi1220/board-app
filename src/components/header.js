@@ -10,11 +10,14 @@ class Header extends React.Component {
    * ログアウトボタン押下
    */
   clickLogoutButton = async () => {
-    // ログアウト処理
-    this.props.logoutAsAdmin();
-
     // ログイン情報を削除
     sessionStorage.removeItem('isAdmin')
+
+    // // 投稿一覧を再取得
+    // this.props.onSelect(this.props.groupId, false);
+
+    // ログアウト処理
+    this.props.logoutAsAdmin();
 
     // ログアウト画面に移動
     this.props.history.push({ pathname: '/logout' });

@@ -16,11 +16,11 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
 
-      let isAdmin = false;
-      // ログイン済みの場合は管理者権限を与える
-      if (sessionStorage.getItem('isAdmin') == 'true') {
-        isAdmin = true;
-      }
+    let isAdmin = false;
+    // ログイン済みの場合は管理者権限を与える
+    if (sessionStorage.getItem('isAdmin') == 'true') {
+      isAdmin = true;
+    }
 
     // ダミーデータ
     this.state = {
@@ -30,23 +30,18 @@ export default class App extends React.Component {
           name: " "
         }
       ],
-      boardList: {
-        "1": [
-          {
-            label: " ",
-            id: " ",
-            name: " ",
-            email: " ",
-            content: " ",
-            complete: true
-          }
-        ]
-      },
+      posts: [
+        {
+          label: " ",
+          id: " ",
+          name: " ",
+          email: " ",
+          content: " ",
+          complete: true
+        }
+      ],
       selectedGroup: "1",
-      // postCount: 5,
-      // groupCount: 1,
       isAdmin: isAdmin,
-      categoryCount: 0,
       errorMessage: "",
     }
 
@@ -57,34 +52,22 @@ export default class App extends React.Component {
         let res = await axios.get(BASE_URL + '/groups')
         this.setState({groupList: Array.from(res.data)})
 
-        // 各グループリストの掲示内容を取得
-        for (let i = 0; i < this.state.groupList.length; i++) {
-          const group_id = this.state.groupList[i].id;
-          if (i === 0) {
-            this.setState({selectedGroup: group_id});
-          }
+        // 最初のグループを選択する
+        const group_id = this.state.groupList[0].id;
+        this.setState({selectedGroup: group_id});
 
-          res = await axios.get(BASE_URL + `/boards/find/${group_id}`)
-
-          let _state = Object.assign({}, this.state);
-          _state.boardList[group_id] = Array.from(res.data);
-
-          // カテゴリの投稿件数
-          console.log('categoryCount: ' + Array.from(res.data).length);
-          
-
-          // stateの更新
-          this.setState(_state);
-        }
-
-        // カテゴリの投稿件数を取得
+        // 最初のグループの内容を初期データとして取得
         let _state = Object.assign({}, this.state);
-        let count = _state.boardList[_state.selectedGroup].length;
-        _state.categoryCount = count;
-         // stateの更新
-         this.setState(_state);
+
+        res = await axios.get(BASE_URL + `/boards/find/${group_id}?isAdmin=${_state.isAdmin}`)
+
+        _state.posts = Array.from(res.data);
+
+        // stateの更新
+        this.setState(_state);
 
       } catch (error) {
+        console.log('initial error');
         console.log(error);
       }
     }
@@ -124,8 +107,7 @@ export default class App extends React.Component {
           complete: res.data.complete
         };
 
-        _state.boardList[_state.selectedGroup].push(addedBoardItem);
-        _state.categoryCount = _state.boardList[_state.selectedGroup].length;
+        _state.posts.push(addedBoardItem);
 
         this.setState(_state);
         this.setState({errorMessage: ""})
@@ -151,14 +133,14 @@ export default class App extends React.Component {
         await axios.delete(BASE_URL + `/boards/${id}`);
 
        // 画面上の投稿を非表示にする
-       let boardList = _state.boardList[_state.selectedGroup];
+       let boardList = _state.posts;
        for (let i = 0; i < boardList.length; i++) {
          if (boardList[i].id === id) {
            boardList.splice(i, 1)
            break;
          }
        }
-       _state.categoryCount = boardList.length;
+
        this.setState(_state);
 
       } catch(error) {
@@ -186,10 +168,10 @@ export default class App extends React.Component {
         await axios.patch(BASE_URL + `/boards/${id}`, boardItem);
 
         // 画面上の投稿を非表示にする
-        let boardList = _state.boardList[_state.selectedGroup];
+        let boardList = _state.posts;
         for (let i = 0; i < boardList.length; i++) {
           if (boardList[i].id === id) {
-            boardList[i].complete = true;
+            boardList.splice(i, 1)
             break;
           }
         }
@@ -205,12 +187,28 @@ export default class App extends React.Component {
   /**
    * グループの選択
    */
-  onSelectGroup(id) {
-    this.setState({selectedGroup: id});
+  onSelectGroup(id, isAdmin) {
 
-    // カテゴリごとの投稿数
-    let count = this.state.boardList[id].length;
-    this.setState({categoryCount: count});
+    // 初期データの取得処理
+    const getPosts = async (group_id) => {
+    try {
+      let _state = Object.assign({}, this.state);
+
+      _state.selectedGroup = group_id;
+      let res = await axios.get(BASE_URL + `/boards/find/${group_id}?isAdmin=${isAdmin}`)
+
+      _state.posts = Array.from(res.data);
+
+      // stateの更新
+      this.setState(_state);
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    // データ初期化
+    getPosts(id);
   }
 
   /**
@@ -235,7 +233,6 @@ export default class App extends React.Component {
           name: res.data.name
         };
         _state.groupList.push(addedGroupItem);
-        _state.boardList[res.data.id] = [];
 
         this.setState(_state);
         this.setState({errorMessage: ''})
@@ -298,16 +295,18 @@ export default class App extends React.Component {
           }
         }
 
-        // カテゴリ配下の投稿も削除
-        delete _state.boardList[id];
-
         // 選択中のカテゴリが削除された場合は、一番最初のカテゴリを選択し直す
         if (_state.selectedGroup === id) {
           _state.selectedGroup = _state.groupList[0].id;
-          _state.categoryCount = _state.boardList[_state.selectedGroup].length;
+          this.setState(_state);
+
+          // 投稿の一覧を再取得
+          this.onSelectGroup(_state.selectedGroup, _state.isAdmin);
         }
 
         this.setState(_state);
+
+        // エラーメッセージの消去
         this.setState({errorMessage: ''})
       } catch(error) {
         console.log(error)
@@ -344,6 +343,14 @@ export default class App extends React.Component {
       }
     }
 
+    // 管理者の場合は、カテゴリごとの投稿数を取得
+    let categoryCount = ''
+    if (this.state.isAdmin) {
+      categoryCount = this.state.posts.length;
+    } else {
+      categoryCount = ''
+    }
+
     return (
       <Router>
         <div className = "wrap">
@@ -359,7 +366,7 @@ export default class App extends React.Component {
                   isAdmin={this.state.isAdmin}
                 />
                 <MainArea
-                  boardList={this.state.boardList[this.state.selectedGroup]}
+                  boardList={this.state.posts}
                   onAddPost={this.onAddPost.bind(this)}
                   onCompletePost={this.onCompletePost.bind(this)}
                   onDeletePost={this.onDeletePost.bind(this)}
@@ -367,19 +374,23 @@ export default class App extends React.Component {
                   isAdmin={this.state.isAdmin}
                   logoutAsAdmin={this.logoutAsAdmin.bind(this)}
                   errorMessage={this.state.errorMessage}
-                  categoryCount={this.state.categoryCount}
+                  categoryCount={categoryCount}
                 />
               </React.Fragment>
             )} />
             <Route path="/login" component={() => (
               <Login
                 loginAsAdmin={this.loginAsAdmin.bind(this)}
+                onSelect={this.onSelectGroup.bind(this)}
+                groupId={this.state.selectedGroup}
                 baseUrl={BASE_URL}
               />
             )}/>
            <Route path="/logout" component={() => (
               <Logout
                 logoutAsAdmin={this.logoutAsAdmin.bind(this)}
+                onSelect={this.onSelectGroup.bind(this)}
+                groupId={this.state.selectedGroup}
               />
             )}/>
           </Switch>
