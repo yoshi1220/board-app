@@ -352,9 +352,7 @@ export default class App extends React.Component {
     let categoryCount = ''
     if (this.state.isAdmin) {
       categoryCount = this.state.posts.length;
-    } else {
-      categoryCount = ''
-    }
+    } 
 
     return (
       <Router>
