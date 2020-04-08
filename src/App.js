@@ -24,12 +24,14 @@ export default class App extends React.Component {
 
     // ダミーデータ
     this.state = {
+      // カテゴリ一覧
       groupList: [
         {
           id: "1",
           name: " "
         }
       ],
+      // 投稿一覧
       posts: [
         {
           label: " ",
@@ -40,8 +42,11 @@ export default class App extends React.Component {
           complete: true
         }
       ],
+      // 選択中のカテゴリ
       selectedGroup: "1",
+      // 管理者の判定
       isAdmin: isAdmin,
+      // エラーメッセージ
       errorMessage: "",
     }
 
