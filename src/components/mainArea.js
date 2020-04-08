@@ -69,42 +69,12 @@ export default class MainArea extends React.Component {
    * 投稿の一覧を表示
    */
   renderBoardItems() {
-    // console.log('renderBoardItems');
-    // console.log(this.props.isAdmin);
-    if (this.props.isAdmin) {
-      return this.renderBoardItemsAdmin();
-    } else {
-      return this.renderBoardItemsNormal();
-    }
-  }
-
-   /**
-    * 一般ユーザー用の一覧表示
-    */
-  renderBoardItemsNormal() {
     let boardItemDom = [];
     for (var i = 0; i < this.props.boardList.length; i++) {
       let boardItem = <Listitem
         data={this.props.boardList[i]}
         key={this.props.boardList[i].id}
         completePost={this.onCompletePost.bind(this)}
-        isAdmin={this.props.isAdmin}
-      />
-      boardItemDom.push(boardItem);
-    }
-    return boardItemDom;
-  }
-
-  /**
-   * 管理者用の一覧表示機能
-   */
-  renderBoardItemsAdmin() {
-    let boardItemDom = [];
-    for (var i = 0; i < this.props.boardList.length; i++) {
-      // console.log(this.props.boardList[i].id);
-      let boardItem = <Listitem
-        data={this.props.boardList[i]}
-        key={this.props.boardList[i].id}
         deletePost={this.onDeletePost.bind(this)}
         isAdmin={this.props.isAdmin}
       />
