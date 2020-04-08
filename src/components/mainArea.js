@@ -87,7 +87,7 @@ export default class MainArea extends React.Component {
       if (!this.props.boardList[i]["complete"]) {
         let boardItem = <Listitem
           data={this.props.boardList[i]}
-          key={"item" + i}
+          key={this.props.boardList[i].id}
           completePost={this.onCompletePost.bind(this)}
           isAdmin={this.props.isAdmin}
         />
@@ -103,9 +103,10 @@ export default class MainArea extends React.Component {
   renderBoardItemsAdmin() {
     let boardItemDom = [];
     for (var i = 0; i < this.props.boardList.length; i++) {
+      console.log(this.props.boardList[i].id);
       let boardItem = <Listitem
         data={this.props.boardList[i]}
-        key={"item" + i}
+        key={this.props.boardList[i].id}
         deletePost={this.onDeletePost.bind(this)}
         isAdmin={this.props.isAdmin}
       />
