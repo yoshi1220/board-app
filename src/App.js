@@ -9,8 +9,8 @@ import axios from 'axios';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 
 // const BASE_URL = 'http://18.180.46.53'
-const BASE_URL = 'http://18.178.76.89'
-// const BASE_URL = 'http://localhost:3001'
+// const BASE_URL = 'http://18.178.76.89'
+const BASE_URL = 'http://localhost:3001'
 
 export default class App extends React.Component {
   constructor(props) {
