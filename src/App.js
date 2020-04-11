@@ -1,6 +1,6 @@
 import React from 'react';
 import './board.scss';
-import MainArea from './components/mainArea';
+import MainArea from './containers/mainArea';
 import SideArea from './components/sideArea';
 import Login from './components/login';
 import Logout from './components/logout';
@@ -369,15 +369,15 @@ export default class App extends React.Component {
                   isAdmin={this.state.isAdmin}
                 />
                 <MainArea
-                  boardList={this.state.posts}
-                  onAddPost={this.onAddPost.bind(this)}
-                  onCompletePost={this.onCompletePost.bind(this)}
-                  onDeletePost={this.onDeletePost.bind(this)}
-                  groupName={groupName}
-                  isAdmin={this.state.isAdmin}
-                  logoutAsAdmin={this.logoutAsAdmin.bind(this)}
-                  errorMessage={this.state.errorMessage}
-                  categoryCount={categoryCount}
+                  // groupName={groupName}
+                  // isAdmin={this.state.isAdmin}
+                  // boardList={this.state.posts}
+                  // onAddPost={this.onAddPost.bind(this)}
+                  // onCompletePost={this.onCompletePost.bind(this)}
+                  // onDeletePost={this.onDeletePost.bind(this)}
+                  // logoutAsAdmin={this.logoutAsAdmin.bind(this)}
+                  // errorMessage={this.state.errorMessage}
+                  // categoryCount={categoryCount}
                 />
               </React.Fragment>
             )} />

@@ -3,11 +3,14 @@ export const boardActionNames = {
 }
 
 export const boardActions = {
-  addPost: (data) => {
+  addPost: (name, email, title, content) => {
     return  {
       type: boardActionNames.ADD_POST,
       payload: {
-        data: data
+        data: name,
+        email: email,
+        title, title,
+        content, content
       }
     }
   }
