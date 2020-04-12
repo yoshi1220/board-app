@@ -33,6 +33,7 @@ export default class MainArea extends React.Component {
    */
   onClickAddButton(event) {
     this.props.onAddPost(
+      this.props.selectedGroup,
       this.state.inputName,
       this.state.inputEmail,
       this.state.inputTitle,

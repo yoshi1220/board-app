@@ -1,6 +1,8 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { createLogger } from 'redux-logger';
+import thunk from 'redux-thunk';
 import reducer from '../reducers/reducer.js';
+
 
 export default function configureStore() {
   const logger = createLogger();
@@ -9,7 +11,7 @@ export default function configureStore() {
   //storeの作成
   const store = createStore(
     reducer,
-    composeEnhancer(applyMiddleware(logger))
+    composeEnhancer(applyMiddleware(logger, thunk))
   );
 
   return store

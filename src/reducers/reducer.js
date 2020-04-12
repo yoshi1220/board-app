@@ -1,7 +1,4 @@
 import { boardActionNames } from '../actions/boardActions';
-import axios from 'axios';
-
-const BASE_URL = 'http://localhost:3001'
 
 const initialState = {
   // カテゴリ一覧
@@ -14,8 +11,8 @@ const initialState = {
   // 投稿一覧
   posts: [
     {
-      label: " ",
       id: " ",
+      title: " ",
       name: " ",
       email: " ",
       content: " ",
@@ -31,48 +28,41 @@ const initialState = {
 }
 
 const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case boardActionNames.ADD_POST:
-      let _state = Object.assign({}, state);
 
-      // 新しい投稿
-      let boardItem = {
-        group_id: _state.selectedGroup,
-        title: action.payload.title,
-        name: action.payload.name,
-        email: action.payload.email,
-        content: action.payload.content,
-        complete: false
+  let _state = Object.assign({}, state);
+
+  switch (action.type) {
+
+    /**
+     * 投稿の新規追加
+     */
+    case boardActionNames.ADD_POST:
+      let addedBoardItem = {
+        id: action.payload.data.id,
+        title: action.payload.data.title,
+        name: action.payload.data.name,
+        email: action.payload.data.email,
+        content: action.payload.data.content,
+        complete: action.payload.data.complete
       };
 
-      // 投稿の新規登録
-      const createBoardItem = async () => {
-        try {
-          let res = await axios.post(BASE_URL + '/boards', boardItem);
+      let posts = Object.assign([], _state.posts)
+      posts.push(addedBoardItem);
+      _state.posts = posts;
+      _state.errorMessage = action.payload.errorMessage;
 
-          // 追加された投稿を画面に表示
-          let addedBoardItem = {
-            id: res.data.id,
-            title: res.data.title,
-            name: res.data.name,
-            email: res.data.email,
-            content: res.data.content,
-            complete: res.data.complete
-          };
+      return _state;
 
-          _state.posts.push(addedBoardItem);
-          _state.errorMessage = '';
-          console.log('inside');
-        } catch(error) {
-          console.log(error)
-          // this.setState({errorMessage: error.response.data.content[0]})
-          _state.errorMessage = '本文は必須入力です。';
-        }
-      }
+    /**
+     * 初期データの取得処理
+     */
+    case boardActionNames.GET_INITIAL_DATA:
 
-      console.log('before');
-      console.log(createBoardItem());
-      console.log('after')
+      _state.groupList = action.payload.groupList;
+      _state.selectedGroup = action.payload.selectedGroup;
+      _state.posts = action.payload.posts;
+      _state.isAdmin = action.payload.isAdmin;
+
       return _state;
 
     default:

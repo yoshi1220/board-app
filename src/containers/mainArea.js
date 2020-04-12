@@ -31,17 +31,19 @@ function getCategroyCount(isAdmin, postLength) {
 const mapStateToProps = (state) => {
 
   return {
+    selectedGroup: state.selectedGroup,
     groupName: getGroupName(state.groupList, state.selectedGroup),
     isAdmin: state.isAdmin,
     categoryCount: getCategroyCount(state.isAdmin, state.posts.length),
+    errorMessage: state.errorMessage,
     boardList: state.posts
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAddPost: (name, email, title, content) => {
-      dispatch(boardActions.addPost(name, email, title, content));
+    onAddPost: (groupId, name, email, title, content) => {
+      dispatch(boardActions.addPost(groupId, name, email, title, content));
     }
   }
 }

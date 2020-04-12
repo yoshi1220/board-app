@@ -1,18 +1,21 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { connect } from 'react-redux';
+
 import './board.scss';
 import MainArea from './containers/mainArea';
 import SideArea from './components/sideArea';
 import Login from './components/login';
 import Logout from './components/logout';
+import { boardActions } from './actions/boardActions';
 
 import axios from 'axios';
-import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 
 // const BASE_URL = 'http://18.180.46.53'
 // const BASE_URL = 'http://18.178.76.89'
 const BASE_URL = 'http://localhost:3001'
 
-export default class App extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
 
@@ -79,52 +82,11 @@ export default class App extends React.Component {
 
     // データ初期化
     getInitialData();
+
+
+    this.props.getInitialData2();
   }
 
-  /**
-   * 投稿の新規追加
-   */
-  onAddPost(name, email, title, content) {
-    let _state = Object.assign({}, this.state);
-
-    // 新しい投稿
-    let boardItem = {
-      group_id: _state.selectedGroup,
-      title: title,
-      name: name,
-      email: email,
-      content: content,
-      complete: false
-    };
-
-    // 投稿の新規登録
-    const createBoardItem = async () => {
-      try {
-        let res = await axios.post(BASE_URL + '/boards', boardItem);
-
-        // 追加された投稿を画面に表示
-        let addedBoardItem = {
-          id: res.data.id,
-          title: res.data.title,
-          name: res.data.name,
-          email: res.data.email,
-          content: res.data.content,
-          complete: res.data.complete
-        };
-
-        _state.posts.push(addedBoardItem);
-
-        this.setState(_state);
-        this.setState({errorMessage: ""})
-      } catch(error) {
-        console.log(error)
-        // this.setState({errorMessage: error.response.data.content[0]})
-        this.setState({errorMessage: '本文は必須入力です。'})
-      }
-    }
-
-    createBoardItem();
-  }
 
   /**
    * 投稿の削除（管理者専用）
@@ -339,21 +301,6 @@ export default class App extends React.Component {
    * render
    */
   render() {
-    // 選択中のカテゴリ名を取得
-    let groupName = "";
-    for (let i = 0; i < this.state.groupList.length; i++) {
-      if (this.state.groupList[i].id === this.state.selectedGroup) {
-        groupName = this.state.groupList[i].name;
-        break;
-      }
-    }
-
-    // 管理者の場合は、カテゴリごとの投稿数を取得
-    let categoryCount = ''
-    if (this.state.isAdmin) {
-      categoryCount = this.state.posts.length;
-    } 
-
     return (
       <Router>
         <div className = "wrap">
@@ -403,3 +350,18 @@ export default class App extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getInitialData2: () => dispatch(boardActions.getInitialData())
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
