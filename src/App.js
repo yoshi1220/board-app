@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import './board.scss';
 import MainArea from './containers/mainArea';
-import SideArea from './components/sideArea';
+import SideArea from './containers/sideArea';
 import Login from './components/login';
 import Logout from './components/logout';
 import { boardActions } from './actions/boardActions';
@@ -83,101 +83,11 @@ class App extends React.Component {
     // データ初期化
     getInitialData();
 
-
+    // reduxの初期値を取得
     this.props.getInitialData2();
   }
 
-
-  /**
-   * 投稿の削除（管理者専用）
-   */
-  onDeletePost(id) {
-    let _state = Object.assign({}, this.state);
-
-    // カテゴリの削除
-    const deletePost = async () => {
-      try {
-        await axios.delete(BASE_URL + `/boards/${id}`);
-
-       // 画面上の投稿を非表示にする
-       let boardList = _state.posts;
-       for (let i = 0; i < boardList.length; i++) {
-         if (boardList[i].id === id) {
-           boardList.splice(i, 1)
-           break;
-         }
-       }
-
-       this.setState(_state);
-
-      } catch(error) {
-        console.log(error)
-      }
-    }
-
-    deletePost();
-  }
-
-  /**
-   * 投稿の完了（非表示）
-   */
-  onCompletePost(id) {
-    let _state = Object.assign({}, this.state);
-
-    // 更新する投稿
-    let boardItem = {
-      complete: true
-    }
-
-    // 投稿の完了（非表示）
-    const completeBoardItem = async () => {
-      try {
-        await axios.patch(BASE_URL + `/boards/${id}`, boardItem);
-
-        // 画面上の投稿を非表示にする
-        let boardList = _state.posts;
-        for (let i = 0; i < boardList.length; i++) {
-          if (boardList[i].id === id) {
-            boardList.splice(i, 1)
-            break;
-          }
-        }
-        this.setState(_state);
-      } catch(error) {
-        console.log(error)
-      }
-    }
-
-    completeBoardItem();
-  }
-
-  /**
-   * グループの選択
-   */
-  onSelectGroup(id, isAdmin) {
-
-    // 初期データの取得処理
-    const getPosts = async (group_id) => {
-    try {
-      let _state = Object.assign({}, this.state);
-
-      _state.selectedGroup = group_id;
-      let res = await axios.get(BASE_URL + `/boards/find/${group_id}?isAdmin=${isAdmin}`)
-
-      _state.posts = Array.from(res.data);
-
-      // stateの更新
-      this.setState(_state);
-
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    // データ初期化
-    getPosts(id);
-  }
-
+ 
   /**
    * 新規カテゴリの追加
    */
@@ -307,14 +217,7 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={() => (
               <React.Fragment>
-                <SideArea
-                  groupList={this.state.groupList}
-                  onSelect={this.onSelectGroup.bind(this)}
-                  onAddGroup={this.onAddGroup.bind(this)}
-                  onEditGroup={this.onEditGroup.bind(this)}
-                  onDeleteGroup={this.onDeleteGroup.bind(this)}
-                  isAdmin={this.state.isAdmin}
-                />
+                <SideArea />
                 <MainArea
                   // groupName={groupName}
                   // isAdmin={this.state.isAdmin}

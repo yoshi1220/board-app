@@ -1,6 +1,6 @@
 import axios from 'axios';
+import { BASE_URL } from './baseActions';
 
-const BASE_URL = 'http://localhost:3001'
 
 export const boardActionNames = {
   ADD_POST: 'ADD_POST',

@@ -1,4 +1,7 @@
 import { boardActionNames } from '../actions/boardActions';
+import { groupActionNames } from '../actions/groupActions';
+import { groupActions } from '../actions/groupActions';
+import _ from 'lodash';
 
 const initialState = {
   // カテゴリ一覧
@@ -29,8 +32,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
 
-  let _state = Object.assign({}, state);
-  let posts;
+  let _state = _.cloneDeep(state);
 
   switch (action.type) {
 
@@ -59,9 +61,7 @@ const reducer = (state = initialState, action) => {
         complete: action.payload.data.complete
       };
 
-      posts = Object.assign([], _state.posts);
-      posts.push(addedBoardItem);
-      _state.posts = posts;
+      _state.posts.push(addedBoardItem);
       _state.errorMessage = action.payload.errorMessage;
 
       return _state;
@@ -71,16 +71,14 @@ const reducer = (state = initialState, action) => {
      */
     case boardActionNames.COMPLETE_POST:
       // 画面上の投稿を非表示にする
-      posts = Object.assign([], _state.posts);
-      for (let i = 0; i < posts.length; i++) {
-        if (posts[i].id === action.payload.id) {
-          posts.splice(i, 1)
+      for (let i = 0; i < _state.posts.length; i++) {
+        if (_state.posts[i].id === action.payload.id) {
+          _state.posts.splice(i, 1)
           break;
         }
       }
-      _state.posts = posts;
 
-      return _state
+      return _state;
 
     /**
      * 投稿の削除処理
@@ -93,6 +91,55 @@ const reducer = (state = initialState, action) => {
           break;
         }
       }
+
+      return _state;
+
+    /**
+     * カテゴリの追加処理
+     */
+    case groupActionNames.ADD_GROUP:
+      // 登録されたカテゴリを一覧に表示
+      let addedGroupItem = {
+        id: action.payload.data.id,
+        name: action.payload.data.name
+      };
+      _state.groupList.push(addedGroupItem);
+      _state.errorMessage = action.payload.errorMessagel;
+
+      return _state;
+
+    /**
+     * カテゴリの選択処理
+     */
+    case groupActionNames.SELECT_GROUP:
+      _state.posts = action.payload.posts;
+      _state.selectedGroup = action.payload.selectedGroup;
+
+      return _state;
+
+    /**
+     * カテゴリの削除
+     */
+    case groupActionNames.DELETE_GROUP:
+       // 画面上のカテゴリを削除
+       for (let i = 0; i < _state.groupList.length; i++) {
+        if (_state.groupList[i].id === action.payload.id) {
+          _state.groupList.splice(i, 1)
+          break;
+        }
+      }
+
+      // 選択中のカテゴリが削除された場合は、一番最初のカテゴリを選択し直す
+      if (_state.selectedGroup === action.payload.id) {
+        _state.selectedGroup = _state.groupList[0].id;
+
+        // 投稿の一覧を再取得
+        groupActions.selectGroup(_state.id, _state.isAdmin);
+      }
+
+      _state.errorMessage = '';
+
+      return _state;
 
     default:
       return state;
