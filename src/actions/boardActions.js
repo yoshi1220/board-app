@@ -61,17 +61,20 @@ export const boardActions = {
 
       let errorMessage = '';
       let response;
+      let data
 
       try {
         response = await axios.post(BASE_URL + '/boards', boardItem);
+        data = response.data;
       } catch(error) {
         errorMessage = '本文は必須入力です。';
+        data = {}
       }
 
       dispatch({
         type: boardActionNames.ADD_POST,
         payload: {
-          data: response.data,
+          data: data,
           errorMessage: errorMessage
         }
       });

@@ -5,6 +5,7 @@ import { groupActions } from '../actions/groupActions';
 const mapStateToProps = (state) => {
   return {
     groupList: state.groupList,
+    selectedGroup: state.selectedGroup,
     isAdmin: state.isAdmin
   }
 }
@@ -20,8 +21,8 @@ const mapDispatchToProps = (dispatch) => {
     onEditGroup: (id, groupName) => {
       dispatch(groupActions.editGroup(id, groupName));
     },
-    onDeleteGroup: (id) => {
-      dispatch(groupActions.deleteGroup(id));
+    onDeleteGroup: (id, selectedGroup, nextGroup, isAdmin) => {
+      dispatch(groupActions.deleteGroup(id, selectedGroup, nextGroup, isAdmin));
     }
   }
 }

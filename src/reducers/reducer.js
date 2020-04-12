@@ -2,8 +2,6 @@ import { boardActionNames } from '../actions/boardActions';
 import { groupActionNames } from '../actions/groupActions';
 import { loginLogoutActionNames } from '../actions/loginLogoutActions';
 
-import { groupActions } from '../actions/groupActions';
-
 import _ from 'lodash';
 
 const initialState = {
@@ -55,16 +53,20 @@ const reducer = (state = initialState, action) => {
      * 投稿の新規追加
      */
     case boardActionNames.ADD_POST:
-      let addedBoardItem = {
-        id: action.payload.data.id,
-        title: action.payload.data.title,
-        name: action.payload.data.name,
-        email: action.payload.data.email,
-        content: action.payload.data.content,
-        complete: action.payload.data.complete
-      };
 
-      _state.posts.push(addedBoardItem);
+      if (action.payload.errorMessage === '') {
+        let addedBoardItem = {
+          id: action.payload.data.id,
+          title: action.payload.data.title,
+          name: action.payload.data.name,
+          email: action.payload.data.email,
+          content: action.payload.data.content,
+          complete: action.payload.data.complete
+        };
+
+        _state.posts.push(addedBoardItem);
+      }
+
       _state.errorMessage = action.payload.errorMessage;
 
       return _state;
@@ -102,12 +104,14 @@ const reducer = (state = initialState, action) => {
      */
     case groupActionNames.ADD_GROUP:
       // 登録されたカテゴリを一覧に表示
-      let addedGroupItem = {
-        id: action.payload.data.id,
-        name: action.payload.data.name
-      };
-      _state.groupList.push(addedGroupItem);
-      _state.errorMessage = action.payload.errorMessagel;
+      if (action.payload.errorMessage === '') {
+        let addedGroupItem = {
+          id: action.payload.data.id,
+          name: action.payload.data.name
+        };
+        _state.groupList.push(addedGroupItem);
+      }
+      _state.errorMessage = action.payload.errorMessage;
 
       return _state;
 
@@ -117,6 +121,21 @@ const reducer = (state = initialState, action) => {
     case groupActionNames.SELECT_GROUP:
       _state.posts = action.payload.posts;
       _state.selectedGroup = action.payload.selectedGroup;
+
+      return _state;
+
+    case groupActionNames.EDIT_GROUP:
+      // カテゴリ名の変更
+      if (action.payload.errorMessage === '') {
+        for (let i = 0; i < _state.groupList.length; i++) {
+          if (_state.groupList[i].id === action.payload.id) {
+            _state.groupList[i].name = action.payload.groupName;
+            break;
+          }
+        }
+      }
+
+      _state.errorMessage = action.payload.errorMessage;
 
       return _state;
 
@@ -132,12 +151,9 @@ const reducer = (state = initialState, action) => {
         }
       }
 
-      // 選択中のカテゴリが削除された場合は、一番最初のカテゴリを選択し直す
-      if (_state.selectedGroup === action.payload.id) {
-        _state.selectedGroup = _state.groupList[0].id;
-
-        // 投稿の一覧を再取得
-        groupActions.selectGroup(_state.id, _state.isAdmin);
+      if (action.payload.isNextData == true) {
+        _state.selectedGroup = action.payload.nextGroup;
+        _state.posts = action.payload.posts;
       }
 
       _state.errorMessage = '';

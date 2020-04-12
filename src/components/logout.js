@@ -1,8 +1,6 @@
 import React from 'react';
 import { Container, Button, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
-import axios from 'axios';
 
 class Logout extends React.Component {
 
@@ -13,7 +11,7 @@ class Logout extends React.Component {
 
       // トップ画面に戻る
       this.props.history.push('/');
-      
+
     } catch (e) {
       console.log(e);
     }
