@@ -44,6 +44,13 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onAddPost: (groupId, name, email, title, content) => {
       dispatch(boardActions.addPost(groupId, name, email, title, content));
+    },
+    onCompletePost: (id) => {
+      console.log('onCompletePost');
+      dispatch(boardActions.completePost(id));
+    },
+    onDeletePost: (id) => {
+      dispatch(boardActions.deletePost(id));
     }
   }
 }
