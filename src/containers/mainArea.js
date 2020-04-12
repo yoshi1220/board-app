@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { boardActions } from '../actions/boardActions';
+import { loginLogoutActions } from '../actions/loginLogoutActions';
 import MainArea from '../components/mainArea';
 
 /**
@@ -51,6 +52,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onDeletePost: (id) => {
       dispatch(boardActions.deletePost(id));
+    },
+    logoutAsAdmin: () => {
+      dispatch(loginLogoutActions.logoutAsAdmin());
     }
   }
 }

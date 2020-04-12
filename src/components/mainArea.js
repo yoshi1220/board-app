@@ -105,7 +105,7 @@ export default class MainArea extends React.Component {
         <Header
           groupName={this.props.groupName}
           isAdmin={this.props.isAdmin}
-          // logoutAsAdmin={this.props.logoutAsAdmin.bind(this)}
+          logoutAsAdmin={this.props.logoutAsAdmin.bind(this)}
           categoryCount={this.props.categoryCount}
         />
         {this.renderError()}

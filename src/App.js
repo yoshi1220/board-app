@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import './board.scss';
 import MainArea from './containers/mainArea';
 import SideArea from './containers/sideArea';
-import Login from './components/login';
+import Login from './containers/login';
 import Logout from './components/logout';
 import { boardActions } from './actions/boardActions';
 
@@ -233,15 +233,14 @@ class App extends React.Component {
             )} />
             <Route path="/login" component={() => (
               <Login
-                loginAsAdmin={this.loginAsAdmin.bind(this)}
-                onSelect={this.onSelectGroup.bind(this)}
-                groupId={this.state.selectedGroup}
-                baseUrl={BASE_URL}
+                // loginAsAdmin={this.loginAsAdmin.bind(this)}
+                // onSelect={this.onSelectGroup.bind(this)}
+                // groupId={this.state.selectedGroup}
+                // baseUrl={BASE_URL}
               />
             )}/>
            <Route path="/logout" component={() => (
               <Logout
-                logoutAsAdmin={this.logoutAsAdmin.bind(this)}
                 onSelect={this.onSelectGroup.bind(this)}
                 groupId={this.state.selectedGroup}
               />

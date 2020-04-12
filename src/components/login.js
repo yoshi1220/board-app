@@ -12,6 +12,7 @@ class Login extends React.Component {
       password: "",
       errMessage: "",
     };
+
   }
 
   click = async () => {
@@ -20,6 +21,7 @@ class Login extends React.Component {
         email: this.state.email,
         password: this.state.password
       }
+
       let res = await axios.post(this.props.baseUrl + '/auth/sign_in', data);
 
       if (res.status == 200) {

@@ -1,6 +1,9 @@
 import { boardActionNames } from '../actions/boardActions';
 import { groupActionNames } from '../actions/groupActions';
+import { loginLogoutActionNames } from '../actions/loginLogoutActions';
+
 import { groupActions } from '../actions/groupActions';
+
 import _ from 'lodash';
 
 const initialState = {
@@ -139,6 +142,20 @@ const reducer = (state = initialState, action) => {
 
       _state.errorMessage = '';
 
+      return _state;
+
+    /**
+     * 管理者ログイン処理
+     */
+    case loginLogoutActionNames.LOGIN:
+      _state.isAdmin = action.payload.isAdmin;
+      return _state;
+
+    /**
+     * 管理者ログアウト処理
+     */
+    case loginLogoutActionNames.LOGOUT:
+      _state.isAdmin = action.payload.isAdmin;
       return _state;
 
     default:
